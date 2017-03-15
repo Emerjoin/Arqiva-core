@@ -68,6 +68,18 @@ public class Arqiva {
     public String renderTopic(String topic){
         checkReady();
 
+        //TODO: Get TopicReference instance
+        //TODO: Load topic markdown content
+        //TODO: Create the TopicRenderingCtx instance
+        //TODO: Execute markdown lifecycle: beforeCompile
+        //TODO: Compile the markdown
+        //TODO: Execute markdown lifecycle: afterCompile
+        //TODO: set compiled HTML to TopicRenderingCtx instance
+        //TODO: Execute the html lifecycle: beforeCompile
+        //TODO: Compile using the template engine
+        //TODO: Execute the html lifecyle: beforeOutput
+        //TODO: Return the final HTML
+
         //TODO:
         throw new MustBeImplementedException();
 
@@ -77,19 +89,17 @@ public class Arqiva {
     public String renderTopicPage(String topic){
         checkReady();
 
-        //TODO:
-        throw new MustBeImplementedException();
-
-    }
-
-    private String renderTheme(){
-        checkReady();
-
-        //TODO: Load index-template HTML file + theme HTML file
-        //TODO: Create an IndexPageRenderingContext instance
-        //TODO: Execute the lifecycle: beforeCompile
+        //TODO: Get TopicReference instance
+        //TODO: Load topic markdown content
+        //TODO: Create the TopicRenderingCtx instance
+        //TODO: Execute markdown lifecycle: beforeCompile
+        //TODO: Compile the markdown
+        //TODO: Execute markdown lifecycle: afterCompile
+        //TODO:  HTML compiled + theme template HTML
+        //TODO: set HTML to TopicRenderingCtx instance
+        //TODO: Execute the html lifecycle: beforeCompile
         //TODO: Compile using the template engine
-        //TODO: Execute the lifecyle: beforeOutput
+        //TODO: Execute the html lifecyle: beforeOutput
         //TODO: Return the final HTML
 
         //TODO:
@@ -98,11 +108,13 @@ public class Arqiva {
     }
 
 
+
+
     public String renderIndex(){
         checkReady();
 
         //TODO: Load index-template HTML file
-        //TODO: Create an IndexRenderingContext instance
+        //TODO: Create an IndexRenderingCtx instance
         //TODO: Execute the lifecycle: beforeCompile
         //TODO: Compile using the template engine
         //TODO: Execute the lifecyle: beforeOutput
@@ -115,7 +127,12 @@ public class Arqiva {
     public String renderIndexPage(){
         checkReady();
 
-
+        //TODO: Load index-template HTML file + theme template
+        //TODO: Create an IndexPageRenderingCtx instance
+        //TODO: Execute the lifecycle: beforeCompile
+        //TODO: Compile using the template engine
+        //TODO: Execute the lifecyle: beforeOutput
+        //TODO: Return the final HTML
 
         throw new MustBeImplementedException();
 
