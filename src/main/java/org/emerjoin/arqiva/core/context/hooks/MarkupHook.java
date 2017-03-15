@@ -1,8 +1,7 @@
 package org.emerjoin.arqiva.core.context.hooks;
 
 import org.emerjoin.arqiva.core.context.HTMLRenderingContext;
-import org.emerjoin.arqiva.core.context.RenderingContext;
-import org.emerjoin.arqiva.core.comp.*;
+import org.emerjoin.arqiva.core.components.*;
 
 /**
  * @author Mário Júnior

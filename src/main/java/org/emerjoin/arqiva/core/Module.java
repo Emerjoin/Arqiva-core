@@ -1,7 +1,7 @@
 package org.emerjoin.arqiva.core;
 
 import org.emerjoin.arqiva.core.context.*;
-import org.emerjoin.arqiva.core.comp.*;
+import org.emerjoin.arqiva.core.components.*;
 
 /**
  * Represents an Arqiva extension.

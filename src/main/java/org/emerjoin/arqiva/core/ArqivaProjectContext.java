@@ -1,7 +1,7 @@
 package org.emerjoin.arqiva.core;
 
-import org.emerjoin.arqiva.core.comp.MarkdownParser;
-import org.emerjoin.arqiva.core.comp.TemplateEngine;
+import org.emerjoin.arqiva.core.components.MarkdownParser;
+import org.emerjoin.arqiva.core.components.TemplateEngine;
 import org.emerjoin.arqiva.core.context.ProjectContext;
 import org.emerjoin.arqiva.core.context.hooks.Hook;
 import org.emerjoin.arqiva.core.context.hooks.MarkdownHook;

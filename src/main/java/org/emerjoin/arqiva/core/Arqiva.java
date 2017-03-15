@@ -1,8 +1,7 @@
 package org.emerjoin.arqiva.core;
 
-import org.emerjoin.arqiva.core.comp.MarkdownParser;
-import org.emerjoin.arqiva.core.comp.TemplateEngine;
-import org.emerjoin.arqiva.core.context.RenderingContext;
+import org.emerjoin.arqiva.core.components.MarkdownParser;
+import org.emerjoin.arqiva.core.components.TemplateEngine;
 import org.emerjoin.arqiva.core.jandex.JandexModulesFinder;
 
 import java.util.ArrayList;
@@ -83,11 +82,32 @@ public class Arqiva {
 
     }
 
+    private String renderTheme(){
+        checkReady();
+
+        //TODO: Load index-template HTML file + theme HTML file
+        //TODO: Create an IndexPageRenderingContext instance
+        //TODO: Execute the lifecycle: beforeCompile
+        //TODO: Compile using the template engine
+        //TODO: Execute the lifecyle: beforeOutput
+        //TODO: Return the final HTML
+
+        //TODO:
+        throw new MustBeImplementedException();
+
+    }
+
 
     public String renderIndex(){
         checkReady();
 
-        //TODO: Implement rendering mechanism in the mood of complete
+        //TODO: Load index-template HTML file
+        //TODO: Create an IndexRenderingContext instance
+        //TODO: Execute the lifecycle: beforeCompile
+        //TODO: Compile using the template engine
+        //TODO: Execute the lifecyle: beforeOutput
+        //TODO: Return the final HTML
+
         throw new MustBeImplementedException();
 
     }
@@ -95,17 +115,19 @@ public class Arqiva {
     public String renderIndexPage(){
         checkReady();
 
+
+
         throw new MustBeImplementedException();
 
     }
 
     private void checkReady(){
         if(!ready)
-            boot();
+            getReady();
 
     }
 
-    private void boot(){
+    private void getReady(){
 
         //Initialize modules (modules may override and configure build components)
         initModules();

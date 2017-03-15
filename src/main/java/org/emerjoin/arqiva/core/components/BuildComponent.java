@@ -1,4 +1,4 @@
-package org.emerjoin.arqiva.core.comp;
+package org.emerjoin.arqiva.core.components;
 
 /**
  * @author Mário Júnior
