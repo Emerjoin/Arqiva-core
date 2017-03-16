@@ -2,7 +2,13 @@ package org.emerjoin.arqiva.core;
 
 import org.emerjoin.arqiva.core.context.ProjectContext;
 import org.emerjoin.arqiva.core.exception.TemplateFileNotFoundException;
+import org.emerjoin.arqiva.core.tree.DefaultTopicsTree;
+import org.emerjoin.arqiva.core.tree.DefaultTreeNode;
 import org.emerjoin.arqiva.core.tree.TopicsTree;
+import org.emerjoin.arqiva.core.tree.TreeNode;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * @author Mário Júnior
@@ -11,12 +17,25 @@ public class ArqivaProject implements Project {
 
     private ProjectContext context = null;
     private TopicsTree topicsTree = null;
-    private boolean cacheTopicsTree = true;
 
 
     public ArqivaProject(ProjectContext context){
 
         this.context = context;
+        context.setValue("tree", new TopicsTree() {
+
+            public TopicsTree subTree(String path) {
+
+                return getCachedTopicsTree().subTree(path);
+
+            }
+
+            public TreeNode getRootNode() {
+
+                return getCachedTopicsTree().getRootNode();
+
+            }
+        });
 
     }
 
@@ -26,22 +45,63 @@ public class ArqivaProject implements Project {
 
     }
 
-    public TopicsTree getTopicsTree() {
+    public void invalidateTopicTree(){
 
-        //TODO: Return a proxy object that will build the tree upon invocation of any method of the object
-        return topicsTree;
-
-    }
-
-    public void disableTopicsTreeCaching() {
-
-        cacheTopicsTree = false;
+        this.topicsTree = null;
 
     }
 
-    public void enableTopicsTreeCaching() {
+    private TopicsTree getCachedTopicsTree() {
 
-        cacheTopicsTree = true;
+        if(topicsTree==null)
+            topicsTree = buildTopicsTree();
+
+      return topicsTree;
+
+    }
+
+    private TopicsTree buildTopicsTree(){
+
+       File topisDirectory = new File(context.getSourceDirectory()+"/topics");
+       TreeNode rootNode = getTreeNode(topisDirectory);
+       return new DefaultTopicsTree(rootNode);
+
+    }
+
+    private DefaultTreeNode getTreeNode(File directory){
+
+        DefaultTreeNode treeNode = new DefaultTreeNode(directory,this);
+
+        File[] files = directory.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+
+                return !(name.equals(".")||name.equals(".."));
+
+            }
+        });
+
+        DefaultTreeNode previousNode = null;
+        for(File file: files){
+
+            if(file.isFile()&&!file.getName().endsWith(".md"))//Only topic files
+                continue;
+
+            DefaultTreeNode currentTreeNode = null;
+            if(file.isDirectory())
+                currentTreeNode = getTreeNode(file);
+            else
+                currentTreeNode = new DefaultTreeNode(file,this);
+
+            if(previousNode==null)
+                continue;
+
+            previousNode.setNext(currentTreeNode);
+            currentTreeNode.setPrevious(previousNode);
+            treeNode.addChild(currentTreeNode);
+
+        }
+
+        return treeNode;
 
     }
 

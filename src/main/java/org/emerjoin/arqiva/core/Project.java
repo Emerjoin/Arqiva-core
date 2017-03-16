@@ -9,19 +9,8 @@ import org.emerjoin.arqiva.core.tree.TopicsTree;
 public interface Project {
 
     public ProjectContext getContext();
-    public TopicsTree getTopicsTree();
+    void invalidateTopicTree();
 
-    /**
-     * Disables the caching of generated {@link TopicsTree}.
-     * Caching is active by default.
-     */
-    public void disableTopicsTreeCaching();
-
-    /**
-     * Enables the caching of generated {@link TopicsTree}.
-     * Caching is active by default.
-     */
-    public void enableTopicsTreeCaching();
 
     /**
      * Gets a HTML template file contents.
