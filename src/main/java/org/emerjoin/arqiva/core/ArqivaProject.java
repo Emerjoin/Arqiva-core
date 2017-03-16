@@ -45,7 +45,7 @@ public class ArqivaProject implements Project {
 
     }
 
-    public void invalidateTopicTree(){
+    public void invalidateTopicsTree(){
 
         this.topicsTree = null;
 

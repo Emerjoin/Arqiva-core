@@ -9,8 +9,9 @@ import org.emerjoin.arqiva.core.tree.TopicsTree;
 public interface Project {
 
     public ProjectContext getContext();
-    void invalidateTopicTree();
 
+
+    void invalidateTopicsTree();
 
     /**
      * Gets a HTML template file contents.
