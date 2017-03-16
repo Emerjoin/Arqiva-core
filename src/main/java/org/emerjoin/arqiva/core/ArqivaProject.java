@@ -28,7 +28,7 @@ public class ArqivaProject implements Project {
 
     public TopicsTree getTopicsTree() {
 
-        //TODO: Build and cache the topics tree
+        //TODO: Return a proxy object that will build the tree upon invocation of any method of the object
         return topicsTree;
 
     }

@@ -76,7 +76,7 @@ public class Arqiva {
 
     public String renderTopic(File topicFile){
         checkReady();
-        TopicReference topicReference = TopicReference.get(topicFile);
+        TopicReference topicReference = TopicReference.get(topicFile,project);
         if(topicReference==null)
             throw new TopicReferenceNotFoundException(topicFile);
 
@@ -88,7 +88,7 @@ public class Arqiva {
     public String renderTopic(String topic){
         checkReady();
 
-        TopicReference topicReference = TopicReference.get(topic);
+        TopicReference topicReference = TopicReference.get(topic,project);
         if(topicReference==null)
             throw new TopicReferenceNotFoundException(topic);
 
@@ -143,7 +143,7 @@ public class Arqiva {
     public String renderTopicPage(File topicFile){
         checkReady();
 
-        TopicReference topicReference = TopicReference.get(topicFile);
+        TopicReference topicReference = TopicReference.get(topicFile,project);
         if(topicReference==null)
             throw new TopicReferenceNotFoundException(topicFile);
 
@@ -155,7 +155,7 @@ public class Arqiva {
     public String renderTopicPage(String topic){
         checkReady();
 
-        TopicReference topicReference = TopicReference.get(topic);
+        TopicReference topicReference = TopicReference.get(topic,project);
         if(topicReference==null)
             throw new TopicReferenceNotFoundException(topic);
 

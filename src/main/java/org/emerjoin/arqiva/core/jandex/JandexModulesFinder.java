@@ -38,7 +38,6 @@ public class JandexModulesFinder implements ModulesFinder {
         try {
 
             for (URL url : urlClassLoader.getURLs()) {
-
                 String filePath = url.getFile();
                 File file = new File(filePath);
                 if (file.isDirectory())
@@ -58,18 +57,14 @@ public class JandexModulesFinder implements ModulesFinder {
                         String moduleClazz = classInfo.name().toString();
                         log.info(String.format("Detected Module : %s", moduleClazz));
                         starter.apply(moduleClazz);
-
                     }
 
                 }finally {
-
                     if(tempFile.exists())
                         tempFile.delete();
-
                 }
 
             }
-
 
         }catch (IOException ex){
 
