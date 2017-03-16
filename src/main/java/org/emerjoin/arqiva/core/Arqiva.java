@@ -2,8 +2,17 @@ package org.emerjoin.arqiva.core;
 
 import org.emerjoin.arqiva.core.components.MarkdownParser;
 import org.emerjoin.arqiva.core.components.TemplateEngine;
+import org.emerjoin.arqiva.core.context.HTMLRenderingContext;
+import org.emerjoin.arqiva.core.context.MarkdownRenderingContext;
+import org.emerjoin.arqiva.core.context.index.IndexPageRenderingCtx;
+import org.emerjoin.arqiva.core.context.index.IndexRenderingContext;
+import org.emerjoin.arqiva.core.context.topic.TopicPageRenderingCtx;
+import org.emerjoin.arqiva.core.context.topic.TopicRenderingContext;
+import org.emerjoin.arqiva.core.context.topic.TopicRenderingCtx;
+import org.emerjoin.arqiva.core.exception.TopicReferenceNotFoundException;
 import org.emerjoin.arqiva.core.jandex.JandexModulesFinder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -65,23 +74,80 @@ public class Arqiva {
     }
 
 
+    public String renderTopic(File topicFile){
+        checkReady();
+        TopicReference topicReference = TopicReference.get(topicFile);
+        if(topicReference==null)
+            throw new TopicReferenceNotFoundException(topicFile);
+
+        return renderTopic(topicReference);
+
+    }
+
+
     public String renderTopic(String topic){
         checkReady();
 
-        //TODO: Get TopicReference instance
-        //TODO: Load topic markdown content
-        //TODO: Create the TopicRenderingCtx instance
-        //TODO: Execute markdown lifecycle: beforeCompile
-        //TODO: Compile the markdown
-        //TODO: Execute markdown lifecycle: afterCompile
-        //TODO: set compiled HTML to TopicRenderingCtx instance
-        //TODO: Execute the html lifecycle: beforeCompile
-        //TODO: Compile using the template engine
-        //TODO: Execute the html lifecyle: beforeOutput
-        //TODO: Return the final HTML
+        TopicReference topicReference = TopicReference.get(topic);
+        if(topicReference==null)
+            throw new TopicReferenceNotFoundException(topic);
 
-        //TODO:
-        throw new MustBeImplementedException();
+        return renderTopic(topicReference);
+
+    }
+
+
+    private String renderHTMLPlusMarkdown(TopicRenderingContext renderingContext){
+
+        LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
+        lifecycleExecutor.beforeCompile((MarkdownRenderingContext) renderingContext);
+
+        String compiledMarkdown = project.getContext().getMarkdownParser().toHTML(renderingContext.getMarkdown());
+        String compiledMarkdownPlusHTMLTemplate = merge(compiledMarkdown,renderingContext.getHtml());
+        renderingContext.updateHtml(compiledMarkdownPlusHTMLTemplate);
+
+        lifecycleExecutor.afterCompile((MarkdownRenderingContext) renderingContext);
+        lifecycleExecutor.beforeCompile((HTMLRenderingContext) renderingContext);
+        project.getContext().getTemplateEngine().run(renderingContext);
+        lifecycleExecutor.afterCompile((HTMLRenderingContext) renderingContext);
+
+        return renderingContext.getHtml();
+
+    }
+
+    private String renderTopic(TopicReference topicReference){
+
+        String topicMarkdown = topicReference.getMarkdownContent();
+        String topicTemplateHtml = project.getHTMLTemplate(TOPIC_PAGE_TEMPLATE);
+        TopicRenderingContext renderingContext = new TopicRenderingCtx(project.getContext(),topicReference,
+                topicTemplateHtml,topicMarkdown);
+
+        return renderHTMLPlusMarkdown(renderingContext);
+
+    }
+
+    private String renderTopicPage(TopicReference topicReference){
+
+        String topicMarkdown = topicReference.getMarkdownContent();
+        String topicTemplateHtml = project.getHTMLTemplate(TOPIC_PAGE_TEMPLATE);
+        String themeTemplateHtml = project.getHTMLTemplate(PROJECT_THEME_HTML_TEMPLATE);
+
+        TopicRenderingContext renderingContext = new TopicRenderingCtx(project.getContext(),topicReference,
+                merge(topicTemplateHtml,themeTemplateHtml),topicMarkdown);
+
+        return renderHTMLPlusMarkdown(renderingContext);
+
+    }
+
+
+    public String renderTopicPage(File topicFile){
+        checkReady();
+
+        TopicReference topicReference = TopicReference.get(topicFile);
+        if(topicReference==null)
+            throw new TopicReferenceNotFoundException(topicFile);
+
+        return renderTopicPage(topicReference);
 
     }
 
@@ -89,52 +155,41 @@ public class Arqiva {
     public String renderTopicPage(String topic){
         checkReady();
 
-        //TODO: Get TopicReference instance
-        //TODO: Load topic markdown content
-        //TODO: Create the TopicRenderingCtx instance
-        //TODO: Execute markdown lifecycle: beforeCompile
-        //TODO: Compile the markdown
-        //TODO: Execute markdown lifecycle: afterCompile
-        //TODO:  HTML compiled + theme template HTML
-        //TODO: set HTML to TopicRenderingCtx instance
-        //TODO: Execute the html lifecycle: beforeCompile
-        //TODO: Compile using the template engine
-        //TODO: Execute the html lifecyle: beforeOutput
-        //TODO: Return the final HTML
+        TopicReference topicReference = TopicReference.get(topic);
+        if(topicReference==null)
+            throw new TopicReferenceNotFoundException(topic);
 
-        //TODO:
-        throw new MustBeImplementedException();
+        return renderTopicPage(topicReference);
 
     }
 
 
+    private String renderHtml(HTMLRenderingContext renderingContext){
 
+        LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
+        lifecycleExecutor.beforeCompile(renderingContext);
+        project.getContext().getTemplateEngine().run(renderingContext);
+        lifecycleExecutor.afterCompile(renderingContext);
+        return renderingContext.getHtml();
+
+    }
 
     public String renderIndex(){
+
         checkReady();
-
-        //TODO: Load index-template HTML file
-        //TODO: Create an IndexRenderingCtx instance
-        //TODO: Execute the lifecycle: beforeCompile
-        //TODO: Compile using the template engine
-        //TODO: Execute the lifecyle: beforeOutput
-        //TODO: Return the final HTML
-
-        throw new MustBeImplementedException();
+        String indexHtml = project.getHTMLTemplate(INDEX_PAGE_TEMPLATE);
+        IndexRenderingContext renderingContext = new IndexPageRenderingCtx(project.getContext(),indexHtml);
+        return renderHtml(renderingContext);
 
     }
 
     public String renderIndexPage(){
+
         checkReady();
-
-        //TODO: Load index-template HTML file + theme template
-        //TODO: Create an IndexPageRenderingCtx instance
-        //TODO: Execute the lifecycle: beforeCompile
-        //TODO: Compile using the template engine
-        //TODO: Execute the lifecyle: beforeOutput
-        //TODO: Return the final HTML
-
-        throw new MustBeImplementedException();
+        String indexHtml = project.getHTMLTemplate(INDEX_PAGE_TEMPLATE);
+        String themeHtml = project.getHTMLTemplate(PROJECT_THEME_HTML_TEMPLATE);
+        IndexPageRenderingCtx renderingCtx = new IndexPageRenderingCtx(project.getContext(),merge(indexHtml,themeHtml));
+        return renderHtml(renderingCtx);
 
     }
 
@@ -185,6 +240,12 @@ public class Arqiva {
         //Ask modules to configure build components
         for(Module module : modulesList)
             module.configureComponents(this.project);
+
+    }
+
+    private String merge(String content, String container){
+
+        return container.replace("<!--@content-->",container);
 
     }
 

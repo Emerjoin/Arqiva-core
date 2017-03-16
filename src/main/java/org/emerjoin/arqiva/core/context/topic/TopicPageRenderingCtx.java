@@ -9,8 +9,8 @@ import org.emerjoin.arqiva.core.context.ProjectContext;
  */
 public class TopicPageRenderingCtx extends AbstractTopicRenderingContext implements FullPageRenderingContext {
 
-    public TopicPageRenderingCtx(ProjectContext context, TopicReference topicReference, String pageHtml) {
-        super(context, topicReference,pageHtml);
+    public TopicPageRenderingCtx(ProjectContext context, TopicReference topicReference, String pageHtml, String markdown) {
+        super(context, topicReference,pageHtml,markdown);
     }
 
 }

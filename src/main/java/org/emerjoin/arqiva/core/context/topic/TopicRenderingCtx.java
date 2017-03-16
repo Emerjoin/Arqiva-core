@@ -9,8 +9,8 @@ import org.emerjoin.arqiva.core.context.ProjectContext;
 public class TopicRenderingCtx extends AbstractTopicRenderingContext {
 
 
-    public TopicRenderingCtx(ProjectContext context, TopicReference topicReference, String topicHtml) {
-        super(context, topicReference, topicHtml);
+    public TopicRenderingCtx(ProjectContext context, TopicReference topicReference, String topicHtml, String markdown) {
+        super(context, topicReference, topicHtml,markdown);
     }
 
 }

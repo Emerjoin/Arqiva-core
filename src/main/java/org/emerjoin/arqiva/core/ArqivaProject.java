@@ -1,6 +1,7 @@
 package org.emerjoin.arqiva.core;
 
 import org.emerjoin.arqiva.core.context.ProjectContext;
+import org.emerjoin.arqiva.core.exception.TemplateFileNotFoundException;
 import org.emerjoin.arqiva.core.tree.TopicsTree;
 
 /**
@@ -44,7 +45,7 @@ public class ArqivaProject implements Project {
 
     }
 
-    public String getHTMLTemplate(String filename) {
+    public String getHTMLTemplate(String filename) throws TemplateFileNotFoundException {
 
         //TODO: Implement
         throw new MustBeImplementedException();

@@ -19,6 +19,6 @@ public interface MarkupHook extends Hook {
      * This method gets invoked right after the HTML is compiled by the {@link TemplateEngine}
      * @param context
      */
-    public void beforeOutput(HTMLRenderingContext context);
+    public void afterCompile(HTMLRenderingContext context);
 
 }

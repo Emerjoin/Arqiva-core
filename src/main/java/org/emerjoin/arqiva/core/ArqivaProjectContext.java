@@ -115,13 +115,13 @@ public class ArqivaProjectContext implements ProjectContext {
     }
 
 
-    protected boolean builderExists(String name){
+    public boolean builderExists(String name){
 
         return builders.containsKey(name);
 
     }
 
-    protected ProjectBuilder getBuilder(String name){
+    public ProjectBuilder getBuilder(String name){
 
         return builders.get(name);
 
@@ -132,7 +132,7 @@ public class ArqivaProjectContext implements ProjectContext {
      * Gets the first or only builder added to the current {@link ArqivaProjectContext}.
      * @return null if no builder was added, otherwise a {@link ProjectBuilder} instance is returned.
      */
-    protected ProjectBuilder getDefaultBuilder(){
+    public ProjectBuilder getDefaultBuilder(){
 
         if(builders.size()<1)
             return null;
@@ -144,13 +144,13 @@ public class ArqivaProjectContext implements ProjectContext {
 
     }
 
-    protected List<MarkupHook> getMarkupHooks(){
+    public List<MarkupHook> getMarkupHooks(){
 
         return markupHooks;
 
     }
 
-    protected List<MarkdownHook> getMarkdownHooks(){
+    public List<MarkdownHook> getMarkdownHooks(){
 
         return markdownHooks;
 

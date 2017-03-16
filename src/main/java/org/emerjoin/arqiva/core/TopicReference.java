@@ -54,6 +54,13 @@ public class TopicReference {
         this.markdownFileOrderNumber = markdownFileOrderNumber;
     }
 
+    public String getMarkdownContent(){
+
+        //TODO: Implement
+        throw new MustBeImplementedException();
+
+    }
+
     public static TopicReference get(String url){
 
         //TODO: Implement

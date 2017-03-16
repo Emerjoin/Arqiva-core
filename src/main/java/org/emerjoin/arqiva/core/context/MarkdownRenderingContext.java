@@ -7,5 +7,6 @@ public interface MarkdownRenderingContext extends HTMLRenderingContext {
 
     public void updateMarkdown(String markdown);
     public String getMarkdown();
+    public String getCompiledMarkdown();
 
 }
