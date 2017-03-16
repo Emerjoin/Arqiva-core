@@ -92,12 +92,15 @@ public class ArqivaProject implements Project {
             else
                 currentTreeNode = new DefaultTreeNode(file,this);
 
-            if(previousNode==null)
+            treeNode.addChild(currentTreeNode);
+            if(previousNode==null){
+                previousNode = currentTreeNode;
                 continue;
+            }
 
             previousNode.setNext(currentTreeNode);
             currentTreeNode.setPrevious(previousNode);
-            treeNode.addChild(currentTreeNode);
+
 
         }
 

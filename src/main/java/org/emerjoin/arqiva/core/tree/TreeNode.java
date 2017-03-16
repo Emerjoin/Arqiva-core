@@ -21,5 +21,6 @@ public interface TreeNode {
     public TreeNode getChild(String name);
     public boolean hasChild(String name);
     public TopicReference getTopicReference();
+    public TreeNode getFirstChild();
 
 }

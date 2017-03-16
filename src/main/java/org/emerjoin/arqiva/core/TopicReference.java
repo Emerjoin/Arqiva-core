@@ -93,7 +93,7 @@ public class TopicReference {
 
     public static TopicReference get(File markdownFile, Project project){
 
-        if(markdownFile.exists())
+        if(!markdownFile.exists())
             throw new IllegalArgumentException(String.format("The markdown File no longer exists : %s",markdownFile.getAbsolutePath()));
 
         if(referencesCache.containsKey(markdownFile.getAbsolutePath()))
@@ -105,14 +105,17 @@ public class TopicReference {
         if(!absolutePath.endsWith(".md"))//The topic files must end with .md extension
             return null;
 
-        int sourcePathLength =  project.getContext().getSourceDirectory().length();
-        String relativePath = absolutePath.substring(sourcePathLength-1,absolutePath.length());
+        int sourcePathLength =  (project.getContext().getSourceDirectory()+"/topics").length();
+        String relativePath = absolutePath.substring(sourcePathLength+1,absolutePath.length());
 
         String[] pathTokens = relativePath.split("/");
         if(pathTokens.length<2)//Minimum number of tokens is 2 because topics live under the topics directory
             return null;
 
 
+        String urlBuilder = "";
+        byte tokenIndex = 0;
+        int lastTokenIndex = pathTokens.length-1;
         for(String pathToken : pathTokens){
 
             String[] nameTokens = pathToken.split("_");
@@ -120,9 +123,25 @@ public class TopicReference {
                 return null;
 
             String orderingNumber = nameTokens[0];
+            String nameWithExtension = nameTokens[1];
 
+            //Its the last token and no sign of markdown filename
+            if(!nameWithExtension.endsWith(".md")&&tokenIndex==lastTokenIndex)
+                return null;
+            else if(!nameWithExtension.endsWith(".md")&&tokenIndex<lastTokenIndex){
+                //Middle path
+                if(!urlBuilder.equals(""))
+                    urlBuilder = urlBuilder+"/";
+                urlBuilder = urlBuilder+nameWithExtension;
+                tokenIndex++;
+                continue;
+            }
+
+            //Its the token with the markdown filename
+            String nameWithoutExtension = nameWithExtension.substring(0,nameWithExtension.lastIndexOf("."));
             try{
 
+                topicReference.url = urlBuilder+"/"+nameWithoutExtension;
                 topicReference.orderingNumber = Integer.parseInt(orderingNumber);
 
             }catch (NumberFormatException ex){
@@ -131,17 +150,15 @@ public class TopicReference {
 
             }
 
-            String nameWithExtension = nameTokens[1];
-            topicReference.name = nameWithExtension.substring(0,nameWithExtension.lastIndexOf("."));
+            topicReference.name = nameWithoutExtension;
             topicReference.filePath = absolutePath;
             topicReference.fileRelativePath = relativePath;
-
             referencesCache.put(absolutePath,topicReference);
             return topicReference;
 
         }
 
-        return topicReference;
+        return null;
 
     }
 }

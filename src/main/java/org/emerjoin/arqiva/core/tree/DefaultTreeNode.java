@@ -15,6 +15,7 @@ public class DefaultTreeNode implements TreeNode {
     private boolean directory = false;
     private TreeNode next = null;
     private TreeNode previous = null;
+    private TreeNode firstChild = null;
     private TopicReference topicReference = null;
     private String name=null;
     private String absolutePath=null;
@@ -22,22 +23,32 @@ public class DefaultTreeNode implements TreeNode {
 
     public DefaultTreeNode(File file, Project project){
 
+
         //Its a topic
         if(!file.isDirectory()){
             topicReference = TopicReference.get(file,project);
+            if(topicReference==null)
+                throw new NullPointerException(String.format("No valid TopicReference found on file %s",file.getAbsolutePath()));
             this.name = topicReference.getName();
 
         }else{
 
-            //Its a directory
-            String nameCandidate = file.getName();
-            name = nameCandidate.substring(nameCandidate.indexOf('_')+1,nameCandidate.length());
+            if(file.getName().equals("topics"))
+                name = "topics-root";
+            else {
+
+                //Its a directory
+                String nameCandidate = file.getName();
+                name = nameCandidate.substring(nameCandidate.indexOf('_') + 1, nameCandidate.length());
+            }
         }
 
     }
 
     public boolean isDirectory() {
-        return directory;
+
+        return !isTopic();
+
     }
 
     public boolean isTopic() {
@@ -109,7 +120,16 @@ public class DefaultTreeNode implements TreeNode {
 
     }
 
+    public TreeNode getFirstChild() {
+
+        return firstChild;
+
+    }
+
     public void addChild(TreeNode node){
+
+        if(childs.size()==0)
+            firstChild = node;
 
         this.childs.put(node.getName(),node);
 
