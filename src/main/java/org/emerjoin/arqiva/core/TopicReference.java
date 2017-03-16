@@ -45,7 +45,7 @@ public class TopicReference {
 
     public String getMarkdownContent(){
 
-        return Utils.getFileContents(new File(filePath));
+        return FileUtils.getFileContents(new File(filePath));
 
     }
 
@@ -57,7 +57,8 @@ public class TopicReference {
             File markdownFile = new File(absolutePath);
             if(!markdownFile.exists())
                 topicsPathsCache.remove(url);
-            return get(markdownFile,project);
+            else
+                return get(markdownFile,project);
 
         }
 
