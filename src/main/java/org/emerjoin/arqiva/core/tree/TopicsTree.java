@@ -5,7 +5,7 @@ package org.emerjoin.arqiva.core.tree;
  */
 public interface TopicsTree {
 
-    public TopicsTree subTree(String relativePath);
+    public TopicsTree subTree(String fromNode);
     public TreeNode getRootNode();
 
 }
