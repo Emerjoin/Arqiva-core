@@ -157,7 +157,7 @@ public class TopicReference {
 
             }
 
-            topicReference.name = nameWithoutExtension;
+            topicReference.name = nameWithoutExtension.substring(0,1).toUpperCase()+nameWithoutExtension.substring(1);
             topicReference.filePath = absolutePath;
             topicReference.fileRelativePath = relativePath;
             referencesCache.put(absolutePath,topicReference);
