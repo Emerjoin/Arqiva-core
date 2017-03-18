@@ -92,7 +92,7 @@ public class FileUtils {
             throw new NullPointerException("The origin File cant be null, nor the destination one");
 
         if(!origin.exists())
-            throw new IllegalArgumentException(String.format("Origin file %s does not exist",origin.getAbsolutePath());
+            throw new IllegalArgumentException(String.format("Origin file %s does not exist",origin.getAbsolutePath()));
 
         File parentDestFile = dest.getParentFile();
         if(!parentDestFile.exists())//Create the sub-directories if they don't exist yet
@@ -112,7 +112,7 @@ public class FileUtils {
 
         }catch (IOException ex){
 
-            throw new ArqivaException(String.format("Failed to copy file %s to %s",origin.getAbsolutePath(),dest.getAbsolutePath());
+            throw new ArqivaException(String.format("Failed to copy file %s to %s",origin.getAbsolutePath(),dest.getAbsolutePath()));
 
         }finally {
 
