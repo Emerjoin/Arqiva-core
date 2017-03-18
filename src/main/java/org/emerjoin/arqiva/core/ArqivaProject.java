@@ -1,5 +1,6 @@
 package org.emerjoin.arqiva.core;
 
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.emerjoin.arqiva.core.context.ProjectContext;
 import org.emerjoin.arqiva.core.exception.TemplateFileNotFoundException;
 import org.emerjoin.arqiva.core.tree.DefaultTopicsTree;
@@ -11,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Mário Júnior
@@ -79,10 +83,16 @@ public class ArqivaProject implements Project {
         File[] files = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
 
-                return !(name.equals(".")||name.equals(".."));
+                Pattern pattern = Pattern.compile("^([0-9]{2}[_])");
+                Matcher matcher = pattern.matcher(name);
+                return matcher.find();
 
             }
         });
+
+        //This will sort the files in ascending order
+        log.info("Sorting "+files.length+" files");
+        Arrays.sort(files,new TopicFileComparator());
 
         DefaultTreeNode previousNode = null;
         for(File file: files){
