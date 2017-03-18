@@ -58,19 +58,29 @@ public class Arqiva {
 
     public void buildProject(String builderName){
 
+        checkReady();
+
+        if(builderName==null)
+            throw new NullPointerException("Builder name is null. It might be empty but never null");
+
         synchronized (project) {
 
             ArqivaProjectContext context = (ArqivaProjectContext) project.getContext();
 
             ProjectBuilder projectBuilder = context.getDefaultBuilder();
 
-            if (builderName == null && projectBuilder == null)
-                throw new ArqivaException(String.format("No %s set", ProjectBuilder.class.getSimpleName()));
+            if (builderName.equals("") && projectBuilder == null)
+                throw new ArqivaException(String.format("No %s instance set.", ProjectBuilder.class.getSimpleName()));
 
-            if (context.builderExists(builderName))
-                projectBuilder = context.getBuilder(builderName);
-            else
-                throw new ArqivaException(String.format("Builder %s not found", builderName));
+            else if(!builderName.equals("")&&projectBuilder == null){
+
+                if (context.builderExists(builderName))
+                    projectBuilder = context.getBuilder(builderName);
+                else
+                    throw new ArqivaException(String.format("Project Builder %s not found.", builderName));
+
+
+            }
 
             //Call the builder
             projectBuilder.build(this);

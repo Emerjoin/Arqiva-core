@@ -6,6 +6,8 @@ import org.emerjoin.arqiva.core.context.ProjectContext;
 import org.emerjoin.arqiva.core.context.hooks.Hook;
 import org.emerjoin.arqiva.core.context.hooks.MarkdownHook;
 import org.emerjoin.arqiva.core.context.hooks.MarkupHook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class ArqivaProjectContext implements ProjectContext {
     private Map<String,ProjectBuilder> builders = new HashMap<String, ProjectBuilder>();
     private List<MarkdownHook> markdownHooks = new ArrayList<MarkdownHook>();
     private List<MarkupHook> markupHooks = new ArrayList<MarkupHook>();
+
+    private static Logger log = LoggerFactory.getLogger(ArqivaProjectContext.class);
 
     public ArqivaProjectContext(String src, String target){
 
@@ -134,11 +138,11 @@ public class ArqivaProjectContext implements ProjectContext {
      */
     public ProjectBuilder getDefaultBuilder(){
 
-        if(builders.size()<1)
+        if(this.builders.size()==0)
             return null;
 
-        ProjectBuilder[] buildersArray = new ProjectBuilder[builders.size()];
-        builders.values().toArray(buildersArray);
+        ProjectBuilder[] buildersArray = new ProjectBuilder[this.builders.size()];
+        this.builders.values().toArray(buildersArray);
 
         return buildersArray[0];
 

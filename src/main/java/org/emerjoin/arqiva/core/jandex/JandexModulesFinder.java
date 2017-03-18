@@ -41,7 +41,7 @@ public class JandexModulesFinder implements ModulesFinder {
 
             for (URL url : urlClassLoader.getURLs()) {
                 String filePath = url.getFile();
-
+                
                 File file = new File(filePath);
                 if (file.isDirectory())
                     continue;
