@@ -66,7 +66,6 @@ public class Arqiva {
         synchronized (project) {
 
             ArqivaProjectContext context = (ArqivaProjectContext) project.getContext();
-
             ProjectBuilder projectBuilder = context.getDefaultBuilder();
 
             if (builderName.equals("") && projectBuilder == null)
