@@ -317,7 +317,7 @@ public class Arqiva {
             backSlashes+="../";
 
         html = html.replace("href=\"topics/","href=\""+backSlashes+"topics/");
-        html = html.replace("href=\"index.html/","href=\""+backSlashes+"index.html/");
+        html = html.replace("href=\"index.html","href=\""+backSlashes+"index.html");
         html = html.replace("src=\"assets/","src=\""+backSlashes+"assets/");
         return html.replace("href=\"assets/","href=\""+backSlashes+"assets/");
 
