@@ -1,6 +1,9 @@
 package org.emerjoin.arqiva.core;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
@@ -19,6 +22,7 @@ public class TopicReference {
 
     private static Map<String,TopicReference> referencesCache = new HashMap<String,TopicReference>();
     private static Map<String,String> topicsPathsCache = new HashMap<String, String>();
+    private static Logger log = LoggerFactory.getLogger(TopicReference.class);
 
     private TopicReference(){}
 
@@ -62,19 +66,24 @@ public class TopicReference {
 
         }
 
-        String[] pathTokens = url.split("/");
-        if(pathTokens.length<2) //Minimum number of tokens is 2 because topics live under the topics directory
-            return null;
+        String[] pathTokens = null;
+        if(url.indexOf("/")==-1)
+            pathTokens = new String[]{url};
+        else pathTokens = url.split("/");
 
         String currentPath = project.getContext().getSourceDirectory()+"/topics";
         File currentFile = new File(currentPath);
 
+        int currentIndex = 0;
         for(final String pathToken : pathTokens){
+
+            final boolean isLastToken = currentIndex == pathTokens.length-1;
 
              File[] matchedFiles = currentFile.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
 
-                    return name.endsWith("_"+pathToken);
+                    String endToken = "_"+pathToken+((isLastToken)?".md":"");
+                    return name.endsWith(endToken);
 
                 }
             });
@@ -84,6 +93,7 @@ public class TopicReference {
 
             currentFile = matchedFiles[0];
             currentPath = currentPath+"/"+currentFile.getName();
+            currentIndex++;
         }
 
         topicsPathsCache.put(url,currentPath);
@@ -109,9 +119,6 @@ public class TopicReference {
         String relativePath = absolutePath.substring(sourcePathLength+1,absolutePath.length());
 
         String[] pathTokens = relativePath.split("/");
-        if(pathTokens.length<2)//Minimum number of tokens is 2 because topics live under the topics directory
-            return null;
-
 
         String urlBuilder = "";
         byte tokenIndex = 0;

@@ -10,10 +10,10 @@ import java.io.File;
 public class TopicReferenceNotFoundException extends ArqivaException {
 
     public TopicReferenceNotFoundException(File file) {
-        super(String.format("No topic reference found for file %s",file.getAbsolutePath()));
+        super(String.format("No topic reference found for File: %s",file.getAbsolutePath()));
     }
 
     public TopicReferenceNotFoundException(String url) {
-        super(String.format("No topic reference found URL %s",url));
+        super(String.format("No topic reference found for URL: %s",url));
     }
 }
