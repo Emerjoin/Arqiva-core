@@ -20,4 +20,8 @@ public interface Project {
      */
     public String getHTMLTemplate(String filename);
 
+
+    public TopicsTree getTopicsTree();
+
+
 }

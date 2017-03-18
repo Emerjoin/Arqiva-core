@@ -91,7 +91,6 @@ public class ArqivaProject implements Project {
         });
 
         //This will sort the files in ascending order
-        log.info("Sorting "+files.length+" files");
         Arrays.sort(files,new TopicFileComparator());
 
         DefaultTreeNode previousNode = null;
@@ -131,6 +130,12 @@ public class ArqivaProject implements Project {
             log.warn(String.format("HTML file %s was not found",targetFile.getAbsolutePath()));
 
         return "";
+
+    }
+
+    public TopicsTree getTopicsTree() {
+
+        return getCachedTopicsTree();
 
     }
 

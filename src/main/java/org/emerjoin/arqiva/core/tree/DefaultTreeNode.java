@@ -34,12 +34,13 @@ public class DefaultTreeNode implements TreeNode {
         }else{
 
             if(file.getName().equals("topics"))
-                name = "topics-root";
+                name = "Topics-root";
             else {
 
                 //Its a directory
                 String nameCandidate = file.getName();
                 name = nameCandidate.substring(nameCandidate.indexOf('_') + 1, nameCandidate.length());
+
             }
         }
 

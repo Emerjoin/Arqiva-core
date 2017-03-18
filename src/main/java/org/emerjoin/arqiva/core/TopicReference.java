@@ -1,6 +1,8 @@
 package org.emerjoin.arqiva.core;
 
 
+import org.emerjoin.arqiva.core.tree.TopicsTree;
+import org.emerjoin.arqiva.core.tree.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ public class TopicReference {
     private String url;
     private String name;
     private int orderingNumber;
+    private Project project = null;
 
     private static Map<String,TopicReference> referencesCache = new HashMap<String,TopicReference>();
     private static Map<String,String> topicsPathsCache = new HashMap<String, String>();
@@ -53,7 +56,19 @@ public class TopicReference {
 
     }
 
+    public TreeNode getTreeNode(){
+
+        TopicsTree treeNode = project.getTopicsTree().subTree(url);
+        if(treeNode==null)
+            return null;
+
+        return treeNode.getRootNode();
+
+    }
+
     public static TopicReference get(String url, Project project){
+
+
 
         if(topicsPathsCache.containsKey(url)){
 
@@ -110,6 +125,7 @@ public class TopicReference {
             return referencesCache.get(markdownFile.getAbsolutePath());
 
         TopicReference topicReference = new TopicReference();
+        topicReference.project = project;
 
         String absolutePath =  markdownFile.getAbsolutePath();
         if(!absolutePath.endsWith(".md"))//The topic files must end with .md extension
@@ -157,7 +173,8 @@ public class TopicReference {
 
             }
 
-            topicReference.name = nameWithoutExtension.substring(0,1).toUpperCase()+nameWithoutExtension.substring(1);
+            //topicReference.name = nameWithoutExtension.substring(0,1).toUpperCase()+nameWithoutExtension.substring(1);
+            topicReference.name = nameWithoutExtension;
             topicReference.filePath = absolutePath;
             topicReference.fileRelativePath = relativePath;
             referencesCache.put(absolutePath,topicReference);
