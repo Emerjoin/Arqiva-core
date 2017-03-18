@@ -58,9 +58,9 @@ public class FileUtils {
             boolean firstLine = true;
             while (scanner.hasNextLine()){
 
-                content = scanner.nextLine();
+                content += scanner.nextLine();
                 if(!firstLine)
-                    content = content+"\n";
+                    content += "\n";
                 else
                     firstLine = false;
 

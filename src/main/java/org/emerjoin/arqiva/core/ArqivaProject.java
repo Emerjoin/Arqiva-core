@@ -6,6 +6,8 @@ import org.emerjoin.arqiva.core.tree.DefaultTopicsTree;
 import org.emerjoin.arqiva.core.tree.DefaultTreeNode;
 import org.emerjoin.arqiva.core.tree.TopicsTree;
 import org.emerjoin.arqiva.core.tree.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -17,6 +19,8 @@ public class ArqivaProject implements Project {
 
     private ProjectContext context = null;
     private TopicsTree topicsTree = null;
+
+    private static final Logger log = LoggerFactory.getLogger(ArqivaProject.class);
 
 
     public ArqivaProject(ProjectContext context){
@@ -110,8 +114,13 @@ public class ArqivaProject implements Project {
 
     public String getHTMLTemplate(String filename) throws TemplateFileNotFoundException {
 
-        //TODO: Implement
-        throw new MustBeImplementedException();
+        File targetFile = new File(context.getSourceDirectory()+"/"+filename+".html");
+        if(targetFile.exists())
+            return FileUtils.getFileContents(targetFile);
+        else
+            log.warn(String.format("HTML file %s was not found",targetFile.getAbsolutePath()));
+
+        return "";
 
     }
 

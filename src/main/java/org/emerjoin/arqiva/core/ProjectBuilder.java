@@ -5,6 +5,6 @@ package org.emerjoin.arqiva.core;
  */
 public interface ProjectBuilder {
 
-    void build(Project project);
+    void build(Arqiva arqiva);
 
 }

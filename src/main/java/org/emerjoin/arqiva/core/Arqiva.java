@@ -11,6 +11,8 @@ import org.emerjoin.arqiva.core.context.topic.TopicRenderingContext;
 import org.emerjoin.arqiva.core.context.topic.TopicRenderingCtx;
 import org.emerjoin.arqiva.core.exception.TopicReferenceNotFoundException;
 import org.emerjoin.arqiva.core.jandex.JandexModulesFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,9 +29,11 @@ public class Arqiva {
 
 
     private static ModulesFinder MODULES_FINDER = new JandexModulesFinder();
-    public static final String PROJECT_THEME_HTML_TEMPLATE = "project-theme.html";
-    public static final String INDEX_PAGE_TEMPLATE = "index-page.html";
-    public static final String TOPIC_PAGE_TEMPLATE = "topic-page.html";
+    public static final String PROJECT_THEME_HTML_TEMPLATE = "project-theme";
+    public static final String INDEX_PAGE_TEMPLATE = "index-page";
+    public static final String TOPIC_PAGE_TEMPLATE = "topic-page";
+
+    private static final Logger log = LoggerFactory.getLogger(Arqiva.class);
 
     public static void overrideModulesFinder(ModulesFinder modulesFinder){
 
@@ -48,26 +52,31 @@ public class Arqiva {
 
     public Arqiva(Project project){
 
-        this.project = null;
+        this.project = project;
 
     }
 
     public void buildProject(String builderName){
 
-        ArqivaProjectContext context = (ArqivaProjectContext) project.getContext();
+        synchronized (project) {
 
-        ProjectBuilder projectBuilder = context.getDefaultBuilder();
+            ArqivaProjectContext context = (ArqivaProjectContext) project.getContext();
 
-        if (builderName == null && projectBuilder == null)
-            throw new ArqivaException(String.format("No %s set", ProjectBuilder.class.getSimpleName()));
+            ProjectBuilder projectBuilder = context.getDefaultBuilder();
 
-        if (context.builderExists(builderName))
-            projectBuilder = context.getBuilder(builderName);
-        else
-            throw new ArqivaException(String.format("Builder %s not found", builderName));
+            if (builderName == null && projectBuilder == null)
+                throw new ArqivaException(String.format("No %s set", ProjectBuilder.class.getSimpleName()));
 
-        //Call the builder
-        projectBuilder.build(project);
+            if (context.builderExists(builderName))
+                projectBuilder = context.getBuilder(builderName);
+            else
+                throw new ArqivaException(String.format("Builder %s not found", builderName));
+
+            //Call the builder
+            projectBuilder.build(this);
+
+
+        }
 
 
 
@@ -75,24 +84,44 @@ public class Arqiva {
 
 
     public String renderTopic(File topicFile){
-        checkReady();
-        TopicReference topicReference = TopicReference.get(topicFile,project);
-        if(topicReference==null)
-            throw new TopicReferenceNotFoundException(topicFile);
 
-        return renderTopic(topicReference);
+        synchronized (project) {
+
+            checkReady();
+            TopicReference topicReference = getTopicReference(topicFile,null);
+
+            return renderTopic(topicReference);
+
+        }
 
     }
 
+    private TopicReference getTopicReference(File file, String url){
+
+        TopicReference topicReference = null;
+
+        if(file!=null)
+            topicReference = TopicReference.get(file, project);
+        else
+            topicReference = TopicReference.get(url, project);
+
+        if (topicReference == null)
+            throw new TopicReferenceNotFoundException((file!=null)?file.getAbsolutePath():url);
+
+        return topicReference;
+
+
+    }
 
     public String renderTopic(String topic){
-        checkReady();
 
-        TopicReference topicReference = TopicReference.get(topic,project);
-        if(topicReference==null)
-            throw new TopicReferenceNotFoundException(topic);
+        synchronized (project) {
 
-        return renderTopic(topicReference);
+            checkReady();
+            TopicReference topicReference = getTopicReference(null,topic);
+            return renderTopic(topicReference);
+
+        }
 
     }
 
@@ -141,25 +170,26 @@ public class Arqiva {
 
 
     public String renderTopicPage(File topicFile){
-        checkReady();
 
-        TopicReference topicReference = TopicReference.get(topicFile,project);
-        if(topicReference==null)
-            throw new TopicReferenceNotFoundException(topicFile);
+        synchronized (project) {
+            checkReady();
 
-        return renderTopicPage(topicReference);
+            TopicReference topicReference = getTopicReference(topicFile,null);
+            return renderTopicPage(topicReference);
+
+        }
 
     }
 
 
     public String renderTopicPage(String topic){
-        checkReady();
 
-        TopicReference topicReference = TopicReference.get(topic,project);
-        if(topicReference==null)
-            throw new TopicReferenceNotFoundException(topic);
+        synchronized (project) {
+            checkReady();
 
-        return renderTopicPage(topicReference);
+            return renderTopicPage(getTopicReference(null,topic));
+
+        }
 
     }
 
@@ -176,20 +206,27 @@ public class Arqiva {
 
     public String renderIndex(){
 
-        checkReady();
-        String indexHtml = project.getHTMLTemplate(INDEX_PAGE_TEMPLATE);
-        IndexRenderingContext renderingContext = new IndexPageRenderingCtx(project.getContext(),indexHtml);
-        return renderHtml(renderingContext);
+        synchronized (project) {
+
+            checkReady();
+            String indexHtml = project.getHTMLTemplate(INDEX_PAGE_TEMPLATE);
+            IndexRenderingContext renderingContext = new IndexPageRenderingCtx(project.getContext(), indexHtml);
+            return renderHtml(renderingContext);
+
+        }
 
     }
 
     public String renderIndexPage(){
 
-        checkReady();
-        String indexHtml = project.getHTMLTemplate(INDEX_PAGE_TEMPLATE);
-        String themeHtml = project.getHTMLTemplate(PROJECT_THEME_HTML_TEMPLATE);
-        IndexPageRenderingCtx renderingCtx = new IndexPageRenderingCtx(project.getContext(),merge(indexHtml,themeHtml));
-        return renderHtml(renderingCtx);
+        synchronized (project) {
+            checkReady();
+            String indexHtml = project.getHTMLTemplate(INDEX_PAGE_TEMPLATE);
+            String themeHtml = project.getHTMLTemplate(PROJECT_THEME_HTML_TEMPLATE);
+            String mergedHtml = merge(indexHtml, themeHtml);
+            IndexPageRenderingCtx renderingCtx = new IndexPageRenderingCtx(project.getContext(), mergedHtml);
+            return renderHtml(renderingCtx);
+        }
 
     }
 
@@ -199,20 +236,26 @@ public class Arqiva {
 
     }
 
-    private void getReady(){
+    public synchronized void getReady(){
 
-        //Initialize modules (modules may override and configure build components)
-        initModules();
+        synchronized (project) {
 
-        //Start build components
-        if(project.getContext().getMarkdownParser()==null)
-            throw new ArqivaException(String.format("No %s component instance set", MarkdownParser.class.getSimpleName()));
-        project.getContext().getMarkdownParser().startComponent();
+            //Initialize modules (modules may override and configure build components)
+            initModules();
+
+            //Start build components
+            if (project.getContext().getMarkdownParser() == null)
+                throw new ArqivaException(String.format("No %s component instance set", MarkdownParser.class.getSimpleName()));
+            project.getContext().getMarkdownParser().startComponent();
 
 
-        if(project.getContext().getTemplateEngine()==null)
-            throw new ArqivaException(String.format("No %s component instance set", TemplateEngine.class.getSimpleName()));
-        project.getContext().getTemplateEngine().startComponent();
+            if (project.getContext().getTemplateEngine() == null)
+                throw new ArqivaException(String.format("No %s component instance set", TemplateEngine.class.getSimpleName()));
+            project.getContext().getTemplateEngine().startComponent();
+
+            ready = true;
+
+        }
 
 
     }
@@ -245,8 +288,16 @@ public class Arqiva {
 
     private String merge(String content, String container){
 
-        return container.replace("<!--@content-->",container);
+        return container.replace("<!--@content-->",content);
 
     }
+
+    public Project getProject(){
+
+        return project;
+
+    }
+
+
 
 }

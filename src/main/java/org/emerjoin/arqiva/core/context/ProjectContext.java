@@ -25,5 +25,7 @@ public interface ProjectContext extends ContextValues {
     public ProjectBuilder getDefaultBuilder();
     public List<MarkupHook> getMarkupHooks();
     public List<MarkdownHook> getMarkdownHooks();
+    public void setMarkdownParser(MarkdownParser parser);
+    public void setTemplateEngine(TemplateEngine templateEngine);
 
 }

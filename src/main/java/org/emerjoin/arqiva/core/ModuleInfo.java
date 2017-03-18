@@ -47,7 +47,7 @@ public class ModuleInfo {
 
         }catch (Throwable t){
 
-            throw new ArqivaException(String.format("Failed to construct module with name %",name),t);
+            throw new ArqivaException(String.format("Failed to construct module with name %s",name),t);
         }
 
     }
