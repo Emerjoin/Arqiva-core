@@ -6,7 +6,6 @@ import org.emerjoin.arqiva.core.context.HTMLRenderingContext;
 import org.emerjoin.arqiva.core.context.MarkdownRenderingContext;
 import org.emerjoin.arqiva.core.context.index.IndexPageRenderingCtx;
 import org.emerjoin.arqiva.core.context.index.IndexRenderingContext;
-import org.emerjoin.arqiva.core.context.topic.TopicPageRenderingCtx;
 import org.emerjoin.arqiva.core.context.topic.TopicRenderingContext;
 import org.emerjoin.arqiva.core.context.topic.TopicRenderingCtx;
 import org.emerjoin.arqiva.core.exception.TopicReferenceNotFoundException;
@@ -140,7 +139,7 @@ public class Arqiva {
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
         lifecycleExecutor.beforeCompile((MarkdownRenderingContext) renderingContext);
 
-        String fixedHTML = fixAssetsPaths(renderingContext.getHtml(),renderingContext.getTopicReference());
+        String fixedHTML = fixAssetsAndTopicsPaths(renderingContext.getHtml(),renderingContext.getTopicReference());
         String compiledMarkdown = project.getContext().getMarkdownParser().toHTML(renderingContext.getMarkdown());
         String compiledMarkdownPlusHTMLTemplate = merge(compiledMarkdown,fixedHTML);
         renderingContext.updateHtml(compiledMarkdownPlusHTMLTemplate);
@@ -308,7 +307,7 @@ public class Arqiva {
 
     }
 
-    private String fixAssetsPaths(String html, TopicReference topicReference){
+    private String fixAssetsAndTopicsPaths(String html, TopicReference topicReference){
 
         String backSlashes = "";
         String[] urlTokens = topicReference.getUrl().split("/");
@@ -317,6 +316,7 @@ public class Arqiva {
         for(int i=0;i<totalSlashes;i++)
             backSlashes+="../";
 
+        html = html.replace("href=\"/topics/","href=\""+backSlashes+"topics/");
         html = html.replace("src=\"assets/","src=\""+backSlashes+"assets/");
         return html.replace("href=\"assets/","href=\""+backSlashes+"assets/");
 
