@@ -311,17 +311,15 @@ public class Arqiva {
     private String fixAssetsPaths(String html, TopicReference topicReference){
 
         String backSlashes = "";
+        log.info("Fixing : "+topicReference.getUrl());
         String[] urlTokens = topicReference.getUrl().split("/");
         int totalSlashes = urlTokens.length;
-        if(totalSlashes==0)
-            return html;
 
-        for(int i=1;i<totalSlashes;i++)
+        for(int i=0;i<totalSlashes;i++)
             backSlashes+="../";
 
-        String toReplace = "assets/";
-        String replacement = backSlashes+toReplace;
-        return html.replace(toReplace,replacement);
+        html = html.replace("src=\"assets/","src=\""+backSlashes+"assets/");
+        return html.replace("href=\"assets/","href=\""+backSlashes+"assets/");
 
     }
 

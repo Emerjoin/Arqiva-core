@@ -148,7 +148,7 @@ public class TopicReference {
             String nameWithoutExtension = nameWithExtension.substring(0,nameWithExtension.lastIndexOf("."));
             try{
 
-                topicReference.url = urlBuilder+"/"+nameWithoutExtension;
+                topicReference.url = (urlBuilder.equals(""))?nameWithoutExtension: urlBuilder+"/"+nameWithoutExtension;
                 topicReference.orderingNumber = Integer.parseInt(orderingNumber);
 
             }catch (NumberFormatException ex){
