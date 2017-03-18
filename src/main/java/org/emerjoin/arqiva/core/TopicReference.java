@@ -185,4 +185,10 @@ public class TopicReference {
         return null;
 
     }
+
+    public String getHtmlUrl(){
+
+        return getUrl()+".html";
+
+    }
 }
