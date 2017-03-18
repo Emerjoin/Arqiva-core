@@ -311,7 +311,6 @@ public class Arqiva {
     private String fixAssetsPaths(String html, TopicReference topicReference){
 
         String backSlashes = "";
-        log.info("Fixing : "+topicReference.getUrl());
         String[] urlTokens = topicReference.getUrl().split("/");
         int totalSlashes = urlTokens.length;
 
