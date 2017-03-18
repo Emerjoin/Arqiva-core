@@ -140,8 +140,9 @@ public class Arqiva {
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
         lifecycleExecutor.beforeCompile((MarkdownRenderingContext) renderingContext);
 
+        String fixedHTML = fixAssetsPaths(renderingContext.getHtml(),renderingContext.getTopicReference());
         String compiledMarkdown = project.getContext().getMarkdownParser().toHTML(renderingContext.getMarkdown());
-        String compiledMarkdownPlusHTMLTemplate = merge(compiledMarkdown,renderingContext.getHtml());
+        String compiledMarkdownPlusHTMLTemplate = merge(compiledMarkdown,fixedHTML);
         renderingContext.updateHtml(compiledMarkdownPlusHTMLTemplate);
 
         lifecycleExecutor.afterCompile((MarkdownRenderingContext) renderingContext);
@@ -304,6 +305,23 @@ public class Arqiva {
     public Project getProject(){
 
         return project;
+
+    }
+
+    private String fixAssetsPaths(String html, TopicReference topicReference){
+
+        String backSlashes = "";
+        String[] urlTokens = topicReference.getUrl().split("/");
+        int totalSlashes = urlTokens.length;
+        if(totalSlashes==0)
+            return html;
+
+        for(int i=1;i<totalSlashes;i++)
+            backSlashes+="../";
+
+        String toReplace = "assets/";
+        String replacement = backSlashes+toReplace;
+        return html.replace(toReplace,replacement);
 
     }
 
