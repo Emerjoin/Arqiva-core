@@ -31,4 +31,64 @@ public class DefaultTopicsTreeTest {
 
     }
 
+
+    @Test
+    public void previousTopicMustReturnTopicB(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("reference/level-2");
+        assertNotNull(subTree);
+
+        assertEquals(2,subTree.getRootNode().getChilds().size());
+        TreeNode coolTopic1NODE = subTree.getRootNode().getFirstChild();
+        TreeNode previousTopic = coolTopic1NODE.previousTopic();
+        assertNotNull(previousTopic);
+        assertEquals("Topic-B",previousTopic.getName());
+
+    }
+
+
+
+    @Test
+    public void nextTopicMustBeTopicCool1(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("reference/level-2");
+        assertNotNull(subTree);
+
+        assertEquals(2,subTree.getRootNode().getChilds().size());
+        TreeNode coolTopic1NODE = subTree.getRootNode().getFirstChild();
+        TreeNode previousTopic = coolTopic1NODE.previousTopic();
+        assertNotNull(previousTopic);
+        assertEquals("Topic-B",previousTopic.getName());
+
+        TreeNode nextTopic = previousTopic.nextTopic();
+        assertNotNull(nextTopic);
+        assertEquals("Topic-cool-1",nextTopic.getName());
+
+    }
+
+
+    @Test
+    public void firstTopicMustBeHelloWorld(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TreeNode firstTopic = tree.firstTopic();
+        assertNotNull(firstTopic);
+        assertEquals("Hello-world",firstTopic.getName());
+
+    }
+
 }

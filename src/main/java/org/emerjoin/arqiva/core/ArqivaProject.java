@@ -43,6 +43,12 @@ public class ArqivaProject implements Project {
                 return getCachedTopicsTree().getRootNode();
 
             }
+
+            public TreeNode firstTopic() {
+
+                return getCachedTopicsTree().firstTopic();
+
+            }
         });
 
     }
@@ -71,14 +77,15 @@ public class ArqivaProject implements Project {
     private TopicsTree buildTopicsTree(){
 
        File topisDirectory = new File(context.getSourceDirectory()+"/topics");
-       TreeNode rootNode = getTreeNode(topisDirectory);
+       TreeNode rootNode = getTreeNode(topisDirectory,null);
        return new DefaultTopicsTree(rootNode);
 
     }
 
-    private DefaultTreeNode getTreeNode(File directory){
+    private DefaultTreeNode getTreeNode(File directory, DefaultTreeNode previousNode){
 
         DefaultTreeNode treeNode = new DefaultTreeNode(directory,this);
+        treeNode.setPrevious(previousNode);
 
         File[] files = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -94,7 +101,7 @@ public class ArqivaProject implements Project {
         Arrays.sort(files,new TopicFileComparator());
 
 
-        DefaultTreeNode previousNode = null;
+        previousNode = null;
         for(File file: files){
 
             if(file.isFile()&&!file.getName().endsWith(".md"))//Only topic files
@@ -102,10 +109,12 @@ public class ArqivaProject implements Project {
 
             DefaultTreeNode currentTreeNode = null;
             if(file.isDirectory())
-                currentTreeNode = getTreeNode(file);
+                currentTreeNode = getTreeNode(file,previousNode);
             else
                 currentTreeNode = new DefaultTreeNode(file,this);
 
+
+            currentTreeNode.setParent(treeNode);
             treeNode.addChild(currentTreeNode);
             if(previousNode==null){
                 previousNode = currentTreeNode;
@@ -114,6 +123,7 @@ public class ArqivaProject implements Project {
 
             previousNode.setNext(currentTreeNode);
             currentTreeNode.setPrevious(previousNode);
+            previousNode = currentTreeNode;
 
 
         }

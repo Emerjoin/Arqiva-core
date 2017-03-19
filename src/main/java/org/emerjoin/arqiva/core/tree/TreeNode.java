@@ -20,7 +20,12 @@ public interface TreeNode {
     public Collection<TreeNode> getChilds();
     public TreeNode getChild(String name);
     public boolean hasChild(String name);
-    public TopicReference getTopicReference();
+    public TopicReference getRef();
     public TreeNode getFirstChild();
+    public TreeNode getLastChild();
+    public TreeNode nextTopic();
+    public TreeNode previousTopic();
+    public TreeNode getParent();
+    public TreeNode deepestTopicNode();
 
 }

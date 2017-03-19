@@ -12,7 +12,6 @@ import java.util.*;
  */
 public class DefaultTreeNode implements TreeNode {
 
-    private boolean directory = false;
     private TreeNode next = null;
     private TreeNode previous = null;
     private TreeNode firstChild = null;
@@ -21,6 +20,7 @@ public class DefaultTreeNode implements TreeNode {
     private String absolutePath=null;
     private Map<String,TreeNode> childs = new HashMap<String,TreeNode>();
     private List<TreeNode> childList = new ArrayList<TreeNode>();
+    private TreeNode parent=null;
 
     public DefaultTreeNode(File file, Project project){
 
@@ -116,7 +116,7 @@ public class DefaultTreeNode implements TreeNode {
 
     }
 
-    public TopicReference getTopicReference() {
+    public TopicReference getRef() {
 
         return topicReference;
 
@@ -125,6 +125,74 @@ public class DefaultTreeNode implements TreeNode {
     public TreeNode getFirstChild() {
 
         return firstChild;
+
+    }
+
+    public TreeNode getLastChild() {
+
+        if(childList.size()==0)
+            return null;
+
+        return childList.get(childList.size()-1);
+
+    }
+
+    public TreeNode nextTopic() {
+
+        return DefaultTopicsTree.findNextTopicFor(this);
+
+    }
+
+    public TreeNode previousTopic() {
+
+        return DefaultTopicsTree.findPreviousTopicFor(this);
+
+    }
+
+    public TreeNode getParent() {
+
+        return parent;
+
+    }
+
+    public TreeNode deepestTopicNode() {
+
+        TreeNode lastChild = null;
+        if(isTopic())
+            lastChild = this;
+
+        return findDeepestTopicNodeIn(this);
+
+    }
+
+    private TreeNode findDeepestTopicNodeIn(TreeNode of){
+
+        if(of.isDirectory() && !of.hasChilds())
+            return null;
+
+        TreeNode currentDeeper = null;
+
+        for(TreeNode child : of.getChilds()){
+
+            if(child.isTopic()) {
+                currentDeeper = child;
+                continue;
+            }
+
+            TreeNode candidate = findDeepestTopicNodeIn(child);
+            if(candidate!=null)
+                currentDeeper = candidate;
+
+        }
+
+        return currentDeeper;
+
+    }
+
+
+    public void setParent(TreeNode parent){
+
+        this.parent = parent;
 
     }
 

@@ -18,4 +18,7 @@ public interface TopicsTree {
      */
     public TreeNode getRootNode();
 
+
+    public TreeNode firstTopic();
+
 }
