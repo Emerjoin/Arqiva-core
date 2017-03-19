@@ -81,6 +81,9 @@ public class DefaultTopicsTree implements TopicsTree {
 
     public static TreeNode findNextTopicFor(TreeNode node){
 
+        if(node==null)
+            return null;
+
         if(!(node.hasNext())&&node.getParent()==null)
             return null;
 
@@ -126,6 +129,9 @@ public class DefaultTopicsTree implements TopicsTree {
 
 
     public static TreeNode findPreviousTopicFor(TreeNode node){
+
+        if(node==null)
+            return null;
 
         if(!(node.hasPrevious())&&node.getParent()==null)
             return null;

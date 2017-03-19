@@ -2,7 +2,6 @@ package org.emerjoin.arqiva.core.tree;
 
 import org.emerjoin.arqiva.core.Project;
 import org.emerjoin.arqiva.core.TopicReference;
-import org.emerjoin.arqiva.core.context.ProjectContext;
 
 import java.io.File;
 import java.util.*;
@@ -21,6 +20,7 @@ public class DefaultTreeNode implements TreeNode {
     private Map<String,TreeNode> childs = new HashMap<String,TreeNode>();
     private List<TreeNode> childList = new ArrayList<TreeNode>();
     private TreeNode parent=null;
+    private Map<String,Object> attachments = new HashMap<String, Object>();
 
     public DefaultTreeNode(File file, Project project){
 
@@ -162,6 +162,30 @@ public class DefaultTreeNode implements TreeNode {
             lastChild = this;
 
         return findDeepestTopicNodeIn(this);
+
+    }
+
+    public Object getValue(String name) {
+
+        return attachments.get(name);
+
+    }
+
+    public void setValue(String name, Object value) {
+
+        attachments.put(name,value);
+
+    }
+
+    public boolean hasTopicAhead() {
+
+        return nextTopic()!=null;
+
+    }
+
+    public boolean hasTopicInTheLead() {
+
+        return previousTopic()!=null;
 
     }
 

@@ -14,6 +14,93 @@ import static org.junit.Assert.*;
  */
 public class DefaultTopicsTreeTest {
 
+
+    @Test
+    public void hasTopicAheadMustBeTrue(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("getting-started/first-program/Hello-world");
+        assertNotNull(subTree);
+
+        TreeNode rootNode = subTree.getRootNode();
+        assertNotNull(rootNode);
+        assertTrue(rootNode.hasTopicAhead());
+    }
+
+
+    @Test
+    public void hasTopicAheadMustBeFalse(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("reference/level-2/Topic-cool-2");
+        assertNotNull(subTree);
+
+        TreeNode rootNode = subTree.getRootNode();
+        assertNotNull(rootNode);
+        assertFalse(rootNode.hasTopicAhead());
+    }
+
+
+    @Test
+    public void hasTopicInTheLeadMustBeFalse(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("getting-started/first-program/Hello-world");
+        assertNotNull(subTree);
+
+        TreeNode rootNode = subTree.getRootNode();
+        assertNotNull(rootNode);
+        assertFalse(rootNode.hasTopicInTheLead());
+
+    }
+
+
+    @Test
+    public void hasTopicInTheLeadMustBeTrue(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("reference/level-2/Topic-cool-1");
+        assertNotNull(subTree);
+
+        TreeNode rootNode = subTree.getRootNode();
+        assertNotNull(rootNode);
+        assertTrue(rootNode.hasTopicInTheLead());
+
+    }
+
+    @Test
+    public void hasTopicInTheLeadMustBeAlsoTrue(){
+
+        String projectsDirectory = new File("").getAbsolutePath()+"/test-projects/test-1";
+        ProjectContext context = new ArqivaProjectContext(projectsDirectory,"");
+        new ArqivaProject(context);
+        TopicsTree tree = (TopicsTree)  context.getValue("tree");
+
+        TopicsTree subTree = tree.subTree("reference/level-2/Topic-cool-2");
+        assertNotNull(subTree);
+        TreeNode rootNode = subTree.getRootNode();
+        assertNotNull(rootNode);
+        assertTrue(rootNode.hasTopicInTheLead());
+
+    }
+
+
     @Test
     public void subTreeMustReturnTreeWithRootNodeWithTwoChilds(){
 
