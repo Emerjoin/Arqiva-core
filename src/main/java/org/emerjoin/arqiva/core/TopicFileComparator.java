@@ -16,7 +16,13 @@ public class TopicFileComparator implements Comparator<File> {
         String fileYName = fileY.getName();
         int fileYNumber = Integer.parseInt(fileYName.substring(0,fileYName.indexOf('_')));
 
-        return ((fileXNumber<fileYNumber)?-1:1);
+        int result = 1;
+        if(fileXNumber==fileYNumber)
+            result = 0;
+        else if(fileXNumber<fileYNumber)
+            result = -1;
+
+        return result;
 
     }
 }

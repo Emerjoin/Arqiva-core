@@ -20,6 +20,7 @@ public class DefaultTreeNode implements TreeNode {
     private String name=null;
     private String absolutePath=null;
     private Map<String,TreeNode> childs = new HashMap<String,TreeNode>();
+    private List<TreeNode> childList = new ArrayList<TreeNode>();
 
     public DefaultTreeNode(File file, Project project){
 
@@ -99,7 +100,7 @@ public class DefaultTreeNode implements TreeNode {
 
     public Collection<TreeNode> getChilds() {
 
-        return childs.values();
+        return childList;
 
     }
 
@@ -133,6 +134,7 @@ public class DefaultTreeNode implements TreeNode {
             firstChild = node;
 
         this.childs.put(node.getName(),node);
+        this.childList.add(node);
 
     }
 

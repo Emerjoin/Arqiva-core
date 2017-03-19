@@ -93,6 +93,7 @@ public class ArqivaProject implements Project {
         //This will sort the files in ascending order
         Arrays.sort(files,new TopicFileComparator());
 
+
         DefaultTreeNode previousNode = null;
         for(File file: files){
 
