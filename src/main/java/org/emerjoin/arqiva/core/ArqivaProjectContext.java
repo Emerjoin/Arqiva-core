@@ -114,6 +114,15 @@ public class ArqivaProjectContext implements ProjectContext {
 
     }
 
+    public Object getValue(String name, Object defaultValue) {
+
+        if(!hasValue(name))
+            return defaultValue;
+
+        return getValue(name);
+
+    }
+
     public Map<String, Object> getValues() {
         return values;
     }

@@ -40,6 +40,15 @@ public  class AbstractRenderingContext implements RenderingContext {
         return root.getValue(name);
     }
 
+    public Object getValue(String name, Object defaultValue) {
+
+        if(!hasValue(name))
+            return defaultValue;
+
+        return getValue(name);
+
+    }
+
     public Map<String, Object> getValues() {
         Map<String,Object> _merged = new HashMap<String, Object>();
         _merged.putAll(root.getValues());

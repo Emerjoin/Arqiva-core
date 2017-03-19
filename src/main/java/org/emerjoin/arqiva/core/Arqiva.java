@@ -2,10 +2,12 @@ package org.emerjoin.arqiva.core;
 
 import org.emerjoin.arqiva.core.components.MarkdownParser;
 import org.emerjoin.arqiva.core.components.TemplateEngine;
+import org.emerjoin.arqiva.core.context.ContextValues;
 import org.emerjoin.arqiva.core.context.HTMLRenderingContext;
 import org.emerjoin.arqiva.core.context.MarkdownRenderingContext;
 import org.emerjoin.arqiva.core.context.index.IndexPageRenderingCtx;
 import org.emerjoin.arqiva.core.context.index.IndexRenderingContext;
+import org.emerjoin.arqiva.core.context.topic.AbstractTopicRenderingContext;
 import org.emerjoin.arqiva.core.context.topic.TopicRenderingContext;
 import org.emerjoin.arqiva.core.context.topic.TopicRenderingCtx;
 import org.emerjoin.arqiva.core.exception.TopicReferenceNotFoundException;
@@ -134,6 +136,26 @@ public class Arqiva {
     }
 
 
+    private boolean getBoolean(ContextValues contextValues, String name, boolean defaultValue){
+
+        if(!contextValues.hasValue(name))
+            return defaultValue;
+
+        String value = contextValues.getValue(name).toString();
+
+        try {
+
+            return Boolean.parseBoolean(value);
+
+        }catch (Throwable ex){
+
+            return defaultValue;
+
+        }
+
+    }
+
+
     private String renderHTMLPlusMarkdown(TopicRenderingContext renderingContext){
 
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
@@ -141,13 +163,33 @@ public class Arqiva {
 
         String fixedHTML = fixAssetsAndTopicsPaths(renderingContext.getHtml(),renderingContext.getTopicReference());
         String compiledMarkdown = project.getContext().getMarkdownParser().toHTML(renderingContext.getMarkdown());
+
+        boolean preEscapeMarkdown = getBoolean(renderingContext,ArqivaConstants.OPTION_MARKDOWN_TEMPLATE_ENGINE_PRE_ESCAPE,false);
+        if(preEscapeMarkdown)
+            compiledMarkdown = project.getContext().getTemplateEngine().escape(compiledMarkdown);
+
+        ((AbstractTopicRenderingContext) renderingContext).setCompiledMarkdown(compiledMarkdown);
+
+        boolean markdownBypassTemplateEngine = getBoolean(renderingContext, ArqivaConstants.OPTION_MARKDOWN_BYPASS_TEMPLATE_ENGINE,true);
+
+        if(preEscapeMarkdown&&markdownBypassTemplateEngine)
+            log.warn("Markdown html output escaping is active while markdown template engine bypass is also active");
+
+        String lifecycleHtmlInput = fixedHTML;
+
+        if(!markdownBypassTemplateEngine)
+            lifecycleHtmlInput = merge(compiledMarkdown,fixedHTML);
+
         String compiledMarkdownPlusHTMLTemplate = merge(compiledMarkdown,fixedHTML);
-        renderingContext.updateHtml(compiledMarkdownPlusHTMLTemplate);
+        renderingContext.updateHtml(lifecycleHtmlInput);
 
         lifecycleExecutor.afterCompile((MarkdownRenderingContext) renderingContext);
         lifecycleExecutor.beforeCompile((HTMLRenderingContext) renderingContext);
         project.getContext().getTemplateEngine().run(renderingContext);
         lifecycleExecutor.afterCompile((HTMLRenderingContext) renderingContext);
+
+        if(markdownBypassTemplateEngine)
+                return merge(compiledMarkdown,renderingContext.getHtml());
 
         return renderingContext.getHtml();
 
