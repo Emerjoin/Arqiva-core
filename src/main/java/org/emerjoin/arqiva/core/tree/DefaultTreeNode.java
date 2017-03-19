@@ -25,7 +25,7 @@ public class DefaultTreeNode implements TreeNode {
 
     public DefaultTreeNode(File file, Project project){
 
-        this.project = null;
+        this.project = project;
 
         //Its a topic
         if(!file.isDirectory()){
@@ -199,16 +199,11 @@ public class DefaultTreeNode implements TreeNode {
 
     }
 
-    public boolean isActiveTopic() {
-
-        if(!isTopic()||project==null)
+    public boolean matchTopic(TopicReference topicRef) {
+        if(topicReference==null||topicRef==null)
             return false;
 
-        if(!project.getContext().hasValue("topic"))
-            return false;
-
-        TopicReference ref = (TopicReference) project.getContext().getValue("topic");
-        return ref.getUrl().equals(topicReference.getUrl());
+        return topicRef.getUrl().equals(topicReference.getUrl());
 
     }
 

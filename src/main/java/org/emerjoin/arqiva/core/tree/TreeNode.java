@@ -32,6 +32,6 @@ public interface TreeNode {
     public void setValue(String name, Object value);
     public boolean hasTopicAhead();
     public boolean hasTopicInTheLead();
-    public boolean isActiveTopic();
+    public boolean matchTopic(TopicReference topic);
 
 }
