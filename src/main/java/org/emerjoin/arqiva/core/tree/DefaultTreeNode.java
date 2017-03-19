@@ -21,9 +21,11 @@ public class DefaultTreeNode implements TreeNode {
     private List<TreeNode> childList = new ArrayList<TreeNode>();
     private TreeNode parent=null;
     private Map<String,Object> attachments = new HashMap<String, Object>();
+    private Project project = null;
 
     public DefaultTreeNode(File file, Project project){
 
+        this.project = null;
 
         //Its a topic
         if(!file.isDirectory()){
@@ -194,6 +196,19 @@ public class DefaultTreeNode implements TreeNode {
     public boolean hasTopicInTheLead() {
 
         return previousTopic()!=null;
+
+    }
+
+    public boolean isActiveTopic() {
+
+        if(!isTopic()||project==null)
+            return false;
+
+        if(!project.getContext().hasValue("topic"))
+            return false;
+
+        TopicReference ref = (TopicReference) project.getContext().getValue("topic");
+        return ref.getUrl().equals(topicReference.getUrl());
 
     }
 
