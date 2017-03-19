@@ -12,6 +12,7 @@ public interface TreeNode {
     public boolean isDirectory();
     public boolean isTopic();
     public String getName();
+    public String getDisplayName();
     public TreeNode next();
     public TreeNode previous();
     public boolean hasNext();

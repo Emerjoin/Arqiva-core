@@ -63,6 +63,14 @@ public class DefaultTreeNode implements TreeNode {
 
     }
 
+    public String getDisplayName() {
+
+        String name = getName();
+        String capital = name.substring(0,1).toUpperCase()+name.substring(1);
+        return capital;
+
+    }
+
     public String getAbsolutePath() {
 
         return absolutePath;
