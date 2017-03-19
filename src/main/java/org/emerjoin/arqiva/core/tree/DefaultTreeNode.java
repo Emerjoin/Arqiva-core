@@ -207,6 +207,12 @@ public class DefaultTreeNode implements TreeNode {
 
     }
 
+    public boolean hasParent() {
+
+        return parent!=null;
+
+    }
+
     private TreeNode findDeepestTopicNodeIn(TreeNode of){
 
         if(of.isDirectory() && !of.hasChilds())

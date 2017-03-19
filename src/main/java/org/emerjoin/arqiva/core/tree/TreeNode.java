@@ -33,5 +33,6 @@ public interface TreeNode {
     public boolean hasTopicAhead();
     public boolean hasTopicInTheLead();
     public boolean matchTopic(TopicReference topic);
+    public boolean hasParent();
 
 }
