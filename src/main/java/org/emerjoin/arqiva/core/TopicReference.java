@@ -68,8 +68,6 @@ public class TopicReference {
 
     public static TopicReference get(String url, Project project){
 
-
-
         if(topicsPathsCache.containsKey(url)){
 
             String absolutePath = topicsPathsCache.get(url);
@@ -82,7 +80,7 @@ public class TopicReference {
         }
 
         String[] pathTokens = null;
-        if(url.indexOf(String.valueOf(File.separator))==-1)
+        if(url.indexOf("/")==-1)
             pathTokens = new String[]{url};
         else pathTokens = url.split("/");
 
@@ -134,7 +132,8 @@ public class TopicReference {
         int sourcePathLength =  (project.getContext().getSourceDirectory()+File.separator+"topics").length();
         String relativePath = absolutePath.substring(sourcePathLength+1,absolutePath.length());
 
-        String[] pathTokens = relativePath.split(String.valueOf(File.separator));
+        //TODO: make sure the Regular expression is properly escaped
+        String[] pathTokens =  Util.splitPath(relativePath);
 
         String urlBuilder = "";
         byte tokenIndex = 0;
@@ -188,7 +187,8 @@ public class TopicReference {
 
     public String getHtmlUrl(){
 
-        return getUrl()+".html";
+        return "topics/"+getUrl()+".html";
 
     }
+
 }
