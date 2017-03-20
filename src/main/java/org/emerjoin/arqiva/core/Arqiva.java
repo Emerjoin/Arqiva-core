@@ -12,6 +12,9 @@ import org.emerjoin.arqiva.core.context.topic.TopicRenderingContext;
 import org.emerjoin.arqiva.core.context.topic.TopicRenderingCtx;
 import org.emerjoin.arqiva.core.exception.TopicReferenceNotFoundException;
 import org.emerjoin.arqiva.core.jandex.JandexModulesFinder;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,6 +159,48 @@ public class Arqiva {
     }
 
 
+    private void escapeBlock(Element element){
+
+        String escaped = String.format("#[[%s]]#",element.html());
+        element.html(escaped);
+
+    }
+
+    private void escapeDocument(Document document){
+
+        document.select("script").forEach(this::escapeBlock);
+        document.select("code").forEach(this::escapeBlock);
+
+    }
+
+    private String escapeElements(String html){
+
+        Document document = null;
+
+        boolean containsBody = html.contains("body");
+        if(containsBody){
+            document = Jsoup.parse(html);
+            escapeDocument(document);
+            return document.outerHtml();
+        }
+
+        document =Jsoup.parseBodyFragment(html);
+        escapeDocument(document);
+        return document.body().outerHtml();
+
+    }
+
+
+    private String htmlPreventiveEscaping(String html, ContextValues values){
+
+        boolean preventiveEscaping = getBoolean(values,ArqivaConstants.OPTION_HTML_PREVENTIVE_ESCAPE,true);
+        if(!preventiveEscaping)
+            return html;
+
+        return escapeElements(html);
+
+    }
+
     private String renderHTMLPlusMarkdown(TopicRenderingContext renderingContext){
 
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
@@ -164,23 +209,22 @@ public class Arqiva {
         String fixedHTML = fixAssetsAndTopicsPaths(renderingContext.getHtml(),renderingContext.getTopicReference());
         String compiledMarkdown = project.getContext().getMarkdownParser().toHTML(renderingContext.getMarkdown());
 
-        boolean preEscapeMarkdown = getBoolean(renderingContext,ArqivaConstants.OPTION_MARKDOWN_TEMPLATE_ENGINE_PRE_ESCAPE,false);
+        boolean preEscapeMarkdown = getBoolean(renderingContext,ArqivaConstants.OPTION_MARKDOWN_TEMPLATE_ENGINE_PRE_ESCAPE,true);
         if(preEscapeMarkdown)
             compiledMarkdown = project.getContext().getTemplateEngine().escape(compiledMarkdown);
 
         ((AbstractTopicRenderingContext) renderingContext).setCompiledMarkdown(compiledMarkdown);
 
-        boolean markdownBypassTemplateEngine = getBoolean(renderingContext, ArqivaConstants.OPTION_MARKDOWN_BYPASS_TEMPLATE_ENGINE,true);
+        boolean markdownBypassTemplateEngine = getBoolean(renderingContext, ArqivaConstants.OPTION_MARKDOWN_BYPASS_TEMPLATE_ENGINE,false);
 
         if(preEscapeMarkdown&&markdownBypassTemplateEngine)
             log.warn("Markdown html output escaping is active while markdown template engine bypass is also active");
 
-        String lifecycleHtmlInput = fixedHTML;
+        String lifecycleHtmlInput = htmlPreventiveEscaping(fixedHTML,renderingContext);
 
         if(!markdownBypassTemplateEngine)
             lifecycleHtmlInput = merge(compiledMarkdown,fixedHTML);
 
-        String compiledMarkdownPlusHTMLTemplate = merge(compiledMarkdown,fixedHTML);
         renderingContext.updateHtml(lifecycleHtmlInput);
 
         lifecycleExecutor.afterCompile((MarkdownRenderingContext) renderingContext);
@@ -246,6 +290,8 @@ public class Arqiva {
 
 
     private String renderHtml(HTMLRenderingContext renderingContext){
+
+        renderingContext.updateHtml(htmlPreventiveEscaping(renderingContext.getHtml(),renderingContext));
 
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
         lifecycleExecutor.beforeCompile(renderingContext);
