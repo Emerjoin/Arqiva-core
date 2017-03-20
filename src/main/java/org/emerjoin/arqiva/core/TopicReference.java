@@ -82,11 +82,11 @@ public class TopicReference {
         }
 
         String[] pathTokens = null;
-        if(url.indexOf("/")==-1)
+        if(url.indexOf(String.valueOf(File.separator))==-1)
             pathTokens = new String[]{url};
         else pathTokens = url.split("/");
 
-        String currentPath = project.getContext().getSourceDirectory()+"/topics";
+        String currentPath = project.getContext().getSourceDirectory()+File.separator+"topics";
         File currentFile = new File(currentPath);
 
         int currentIndex = 0;
@@ -107,7 +107,7 @@ public class TopicReference {
                 return null;
 
             currentFile = matchedFiles[0];
-            currentPath = currentPath+"/"+currentFile.getName();
+            currentPath = currentPath+File.separator+currentFile.getName();
             currentIndex++;
         }
 
@@ -131,10 +131,10 @@ public class TopicReference {
         if(!absolutePath.endsWith(".md"))//The topic files must end with .md extension
             return null;
 
-        int sourcePathLength =  (project.getContext().getSourceDirectory()+"/topics").length();
+        int sourcePathLength =  (project.getContext().getSourceDirectory()+File.separator+"topics").length();
         String relativePath = absolutePath.substring(sourcePathLength+1,absolutePath.length());
 
-        String[] pathTokens = relativePath.split("/");
+        String[] pathTokens = relativePath.split(String.valueOf(File.separator));
 
         String urlBuilder = "";
         byte tokenIndex = 0;

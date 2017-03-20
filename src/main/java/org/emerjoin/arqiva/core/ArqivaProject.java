@@ -76,7 +76,7 @@ public class ArqivaProject implements Project {
 
     private TopicsTree buildTopicsTree(){
 
-       File topisDirectory = new File(context.getSourceDirectory()+"/topics");
+       File topisDirectory = new File(context.getSourceDirectory()+File.separator+"topics");
        TreeNode rootNode = getTreeNode(topisDirectory,null);
        return new DefaultTopicsTree(rootNode);
 
@@ -134,7 +134,7 @@ public class ArqivaProject implements Project {
 
     public String getHTMLTemplate(String filename) throws TemplateFileNotFoundException {
 
-        File targetFile = new File(context.getSourceDirectory()+"/"+filename+".html");
+        File targetFile = new File(context.getSourceDirectory()+File.separator+filename+".html");
         if(targetFile.exists())
             return FileUtils.getFileContents(targetFile);
         else

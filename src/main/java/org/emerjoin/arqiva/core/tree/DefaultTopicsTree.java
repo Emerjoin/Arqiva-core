@@ -1,5 +1,7 @@
 package org.emerjoin.arqiva.core.tree;
 
+import java.io.File;
+
 /**
  * @author Mário Júnior
  */
@@ -15,7 +17,7 @@ public class DefaultTopicsTree implements TopicsTree {
 
     public TopicsTree subTree(String path) {
 
-        String[] pathTokens = path.split("/");
+        String[] pathTokens = path.split(String.valueOf(File.separator));
         if (pathTokens.length < 2)
             throw new IllegalArgumentException("Invalid path supplied. No forward slash found");
 
@@ -31,7 +33,7 @@ public class DefaultTopicsTree implements TopicsTree {
             if (currentNode.hasChild(nodeToFindName)) {
                 currentNode = currentNode.getChild(nodeToFindName);
                 if (!firstRound)
-                    currentPath = currentPath + "/";
+                    currentPath = currentPath + File.separator;
                 else firstRound = false;
                 currentPath = currentPath + nodeToFindName;
             } else break;
