@@ -206,7 +206,7 @@ public class Arqiva {
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
         lifecycleExecutor.beforeCompile((MarkdownRenderingContext) renderingContext);
 
-        String fixedHTML = fixAssetsAndTopicsPaths(renderingContext.getHtml(),renderingContext.getTopicReference());
+
         String compiledMarkdown = project.getContext().getMarkdownParser().toHTML(renderingContext.getMarkdown());
 
         boolean preEscapeMarkdown = getBoolean(renderingContext,ArqivaConstants.OPTION_MARKDOWN_TEMPLATE_ENGINE_PRE_ESCAPE,true);
@@ -220,10 +220,10 @@ public class Arqiva {
         if(preEscapeMarkdown&&markdownBypassTemplateEngine)
             log.warn("Markdown html output escaping is active while markdown template engine bypass is also active");
 
-        String lifecycleHtmlInput = htmlPreventiveEscaping(fixedHTML,renderingContext);
 
+        String lifecycleHtmlInput = htmlPreventiveEscaping(renderingContext.getHtml(),renderingContext);
         if(!markdownBypassTemplateEngine)
-            lifecycleHtmlInput = merge(compiledMarkdown,fixedHTML);
+            lifecycleHtmlInput = merge(compiledMarkdown,renderingContext.getHtml());
 
         renderingContext.updateHtml(lifecycleHtmlInput);
 
@@ -231,6 +231,9 @@ public class Arqiva {
         lifecycleExecutor.beforeCompile((HTMLRenderingContext) renderingContext);
         project.getContext().getTemplateEngine().run(renderingContext);
         lifecycleExecutor.afterCompile((HTMLRenderingContext) renderingContext);
+
+        String adjusted = adjustAssetsAndTopicsLinks(renderingContext.getHtml(),renderingContext.getTopicReference());
+        renderingContext.updateHtml(adjusted);
 
         if(markdownBypassTemplateEngine)
                 return merge(compiledMarkdown,renderingContext.getHtml());
@@ -395,7 +398,7 @@ public class Arqiva {
 
     }
 
-    private String fixAssetsAndTopicsPaths(String html, TopicReference topicReference){
+    private String adjustAssetsAndTopicsLinks(String html, TopicReference topicReference){
 
         String backSlashes = "";
         String[] urlTokens = topicReference.getUrl().split("/");
