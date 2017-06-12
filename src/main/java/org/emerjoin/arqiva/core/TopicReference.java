@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.time.Year;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,7 +145,7 @@ public class TopicReference {
                 return null;
 
             String orderingNumber = nameTokens[0];
-            String nameWithExtension = nameTokens[1];
+            String nameWithExtension = nameTokens[1]; //TODO: Fix issue found here: assume that there might be more than one instance of "_".
 
             //Its the last token and no sign of markdown filename
             if(!nameWithExtension.endsWith(".md")&&tokenIndex==lastTokenIndex)
