@@ -106,12 +106,18 @@ public class Arqiva {
 
     public String renderTopic(File topicFile){
 
+        return renderTopic(topicFile,false);
+
+    }
+
+    public String renderTopic(File topicFile, boolean noAdjusts){
+
         synchronized (project) {
 
             checkReady();
             TopicReference topicReference = getTopicReference(topicFile,null);
 
-            return renderTopic(topicReference);
+            return renderTopic(topicReference,noAdjusts);
 
         }
 
@@ -136,13 +142,20 @@ public class Arqiva {
 
     public String renderTopic(String topic){
 
+        return renderTopic(topic,false);
+
+    }
+
+    public String renderTopic(String topic, boolean noAdjust){
+
         synchronized (project) {
 
             checkReady();
             TopicReference topicReference = getTopicReference(null,topic);
-            return renderTopic(topicReference);
+            return renderTopic(topicReference,noAdjust);
 
         }
+
 
     }
 
@@ -209,7 +222,7 @@ public class Arqiva {
 
     }
 
-    private String renderHTMLPlusMarkdown(TopicRenderingContext renderingContext){
+    private String renderHTMLPlusMarkdown(TopicRenderingContext renderingContext, boolean noAdjusts){
 
         LifecycleExecutor lifecycleExecutor = new LifecycleExecutor(project.getContext());
         lifecycleExecutor.beforeCompile((MarkdownRenderingContext) renderingContext);
@@ -240,7 +253,10 @@ public class Arqiva {
         project.getContext().getTemplateEngine().run(renderingContext);
         lifecycleExecutor.afterCompile((HTMLRenderingContext) renderingContext);
 
-        String adjusted = adjustAssetsAndTopicsLinks(renderingContext.getHtml(),renderingContext.getTopicReference());
+        String adjusted = renderingContext.getHtml();
+        if(!noAdjusts)
+            adjusted = adjustAssetsAndTopicsLinks(renderingContext.getHtml(),renderingContext.getTopicReference());
+
         renderingContext.updateHtml(adjusted);
 
         if(markdownBypassTemplateEngine)
@@ -250,18 +266,18 @@ public class Arqiva {
 
     }
 
-    private String renderTopic(TopicReference topicReference){
+    private String renderTopic(TopicReference topicReference,boolean noAdjusts){
 
         String topicMarkdown = topicReference.getMarkdownContent();
         String topicTemplateHtml = project.getHTMLTemplate(TOPIC_PAGE_TEMPLATE);
         TopicRenderingContext renderingContext = new TopicRenderingCtx(project.getContext(),topicReference,
                 topicTemplateHtml,topicMarkdown);
 
-        return renderHTMLPlusMarkdown(renderingContext);
+        return renderHTMLPlusMarkdown(renderingContext,noAdjusts);
 
     }
 
-    private String renderTopicPage(TopicReference topicReference){
+    private String renderTopicPage(TopicReference topicReference, boolean noAdjusts){
 
         String topicMarkdown = topicReference.getMarkdownContent();
         String topicTemplateHtml = project.getHTMLTemplate(TOPIC_PAGE_TEMPLATE);
@@ -270,30 +286,43 @@ public class Arqiva {
         TopicRenderingContext renderingContext = new TopicRenderingCtx(project.getContext(),topicReference,
                 merge(topicTemplateHtml,themeTemplateHtml),topicMarkdown);
 
-        return renderHTMLPlusMarkdown(renderingContext);
+        return renderHTMLPlusMarkdown(renderingContext,noAdjusts);
 
     }
 
 
-    public String renderTopicPage(File topicFile){
+    public String renderTopicPage(File topicFile, boolean noAdjusts){
 
         synchronized (project) {
             checkReady();
 
             TopicReference topicReference = getTopicReference(topicFile,null);
-            return renderTopicPage(topicReference);
+            return renderTopicPage(topicReference,noAdjusts);
 
         }
+
+
+    }
+
+    public String renderTopicPage(File topicFile){
+
+        return renderTopicPage(topicFile,false);
 
     }
 
 
     public String renderTopicPage(String topic){
 
-        synchronized (project) {
-            checkReady();
+        return renderTopicPage(topic,false);
 
-            return renderTopicPage(getTopicReference(null,topic));
+    }
+
+    public String renderTopicPage(String topic, boolean noAdjusts){
+
+        synchronized (project) {
+
+            checkReady();
+            return renderTopicPage(getTopicReference(null,topic),noAdjusts);
 
         }
 
