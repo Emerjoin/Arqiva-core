@@ -70,7 +70,7 @@ public class DefaultTreeNode implements TreeNode {
 
         String name = getName();
         String capital = name.substring(0,1).toUpperCase()+name.substring(1);
-        return capital;
+        return capital.replace('-',' ');
 
     }
 
