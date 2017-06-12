@@ -20,7 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 
@@ -32,10 +34,16 @@ import java.util.function.Function;
 public class Arqiva {
 
 
+    public static final String START_POINT_INDEX = "DEFAULT";
+    public static final String START_POINT_FIRST_TOPIC = "FIRST_TOPIC";
+
+
     private static ModulesFinder MODULES_FINDER = new JandexModulesFinder();
     public static final String PROJECT_THEME_HTML_TEMPLATE = "project-theme";
     public static final String INDEX_PAGE_TEMPLATE = "index-page";
     public static final String TOPIC_PAGE_TEMPLATE = "topic-page";
+    private String startPoint=START_POINT_INDEX;
+    private Map<String,Object> buildHints = new HashMap<>();
 
     private static final Logger log = LoggerFactory.getLogger(Arqiva.class);
 
@@ -415,5 +423,23 @@ public class Arqiva {
     }
 
 
+    public String getStartPoint() {
+        return startPoint;
+    }
 
+    public void setStartPoint(String startPoint) {
+        if(startPoint==null)
+            throw new IllegalArgumentException("null argument not allowed here");
+        this.startPoint = startPoint;
+    }
+
+    public Map<String, Object> getBuildHints() {
+        return buildHints;
+    }
+
+    public void setBuildHints(Map<String, Object> buildHints) {
+        if(buildHints==null)
+            throw new IllegalArgumentException("null argument not allowed here");
+        this.buildHints = buildHints;
+    }
 }

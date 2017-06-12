@@ -69,14 +69,12 @@ public class TopicReference {
     public static TopicReference get(String url, Project project){
 
         if(topicsPathsCache.containsKey(url)){
-
             String absolutePath = topicsPathsCache.get(url);
             File markdownFile = new File(absolutePath);
             if(!markdownFile.exists())
                 topicsPathsCache.remove(url);
             else
                 return get(markdownFile,project);
-
         }
 
         String[] pathTokens = null;

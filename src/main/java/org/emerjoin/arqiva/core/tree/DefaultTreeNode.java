@@ -34,6 +34,7 @@ public class DefaultTreeNode implements TreeNode {
                 throw new NullPointerException(String.format("No valid TopicReference found on file %s",file.getAbsolutePath()));
             this.name = topicReference.getName();
 
+
         }else{
 
             if(file.getName().equals("topics"))
