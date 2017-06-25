@@ -18,8 +18,8 @@ public class DefaultTopicsTree implements TopicsTree {
     public TopicsTree subTree(String path) {
 
         String[] pathTokens = path.split("/");
-        if (pathTokens.length < 2)
-            throw new IllegalArgumentException("Invalid path supplied. No forward slash found");
+        if(pathTokens.length==0)
+            return new DefaultTopicsTree(treeNode);
 
         int nodeToFindIndex = 0;
         String currentPath = "";
