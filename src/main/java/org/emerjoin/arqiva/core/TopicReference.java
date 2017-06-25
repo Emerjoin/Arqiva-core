@@ -84,7 +84,7 @@ public class TopicReference {
             pathTokens = new String[]{url};
         else pathTokens = url.split("/");
 
-        String currentPath = project.getContext().getSourceDirectory()+File.separator+"topics";
+        String currentPath = project.getContext().getSourceDirectory()+File.separator+project.getContext().getTopicsDirectory();
         File currentFile = new File(currentPath);
 
         int currentIndex = 0;
@@ -101,11 +101,11 @@ public class TopicReference {
                 }
             });
 
-            if(matchedFiles.length!=1)
-                return null;
+            if(matchedFiles!=null&&matchedFiles.length>=1){
+                currentFile = matchedFiles[0];
+                currentPath = currentPath+File.separator+currentFile.getName();
+            }
 
-            currentFile = matchedFiles[0];
-            currentPath = currentPath+File.separator+currentFile.getName();
             currentIndex++;
         }
 
@@ -129,7 +129,8 @@ public class TopicReference {
         if(!absolutePath.endsWith(".md"))//The topic files must end with .md extension
             return null;
 
-        int sourcePathLength =  (project.getContext().getSourceDirectory()+File.separator+"topics").length();
+        int sourcePathLength =  (project.getContext().getSourceDirectory()+File.separator
+                +project.getContext().getTopicsDirectory()).length();
         String relativePath = absolutePath.substring(sourcePathLength+1,absolutePath.length());
 
         //TODO: make sure the Regular expression is properly escaped
@@ -187,7 +188,7 @@ public class TopicReference {
 
     public String getHtmlUrl(){
 
-        return "topics/"+getUrl()+".html";
+        return project.getContext().getTopicsDirectory()+ "/"+getUrl()+".html";
 
     }
 

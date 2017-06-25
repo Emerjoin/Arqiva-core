@@ -37,7 +37,7 @@ public class DefaultTreeNode implements TreeNode {
 
         }else{
 
-            if(file.getName().equals("topics"))
+            if(file.getName().equals(project.getContext().getTopicsDirectory()))
                 name = "Topics-root";
             else {
 

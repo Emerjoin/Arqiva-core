@@ -76,7 +76,7 @@ public class ArqivaProject implements Project {
 
     private TopicsTree buildTopicsTree(){
 
-       File topisDirectory = new File(context.getSourceDirectory()+File.separator+"topics");
+       File topisDirectory = new File(context.getSourceDirectory()+File.separator+context.getTopicsDirectory());
        TreeNode rootNode = getTreeNode(topisDirectory,null);
        return new DefaultTopicsTree(rootNode);
 

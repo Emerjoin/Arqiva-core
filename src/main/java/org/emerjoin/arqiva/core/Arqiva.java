@@ -444,7 +444,8 @@ public class Arqiva {
         for(int i=0;i<totalSlashes;i++)
             backSlashes+="../";
 
-        html = html.replace("href=\"topics/","href=\""+backSlashes+"topics/");
+        String topicsDirectory = project.getContext().getTopicsDirectory();
+        html = html.replace("href=\""+topicsDirectory+"/","href=\""+backSlashes+topicsDirectory+"/");
         html = html.replace("href=\"index.html","href=\""+backSlashes+"index.html");
         html = html.replace("src=\"assets/","src=\""+backSlashes+"assets/");
         return html.replace("href=\"assets/","href=\""+backSlashes+"assets/");

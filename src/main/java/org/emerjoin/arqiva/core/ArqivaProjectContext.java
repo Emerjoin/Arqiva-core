@@ -28,6 +28,7 @@ public class ArqivaProjectContext implements ProjectContext {
     private Map<String,ProjectBuilder> builders = new HashMap<String, ProjectBuilder>();
     private List<MarkdownHook> markdownHooks = new ArrayList<MarkdownHook>();
     private List<MarkupHook> markupHooks = new ArrayList<MarkupHook>();
+    private String topicsDirectory = "topics";
 
     private static Logger log = LoggerFactory.getLogger(ArqivaProjectContext.class);
 
@@ -167,5 +168,13 @@ public class ArqivaProjectContext implements ProjectContext {
 
         return markdownHooks;
 
+    }
+
+    public String getTopicsDirectory() {
+        return topicsDirectory;
+    }
+
+    public void setTopicsDirectory(String topicsDirectory) {
+        this.topicsDirectory = topicsDirectory;
     }
 }

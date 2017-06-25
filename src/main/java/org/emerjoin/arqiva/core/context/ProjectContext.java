@@ -27,5 +27,7 @@ public interface ProjectContext extends ContextValues {
     public List<MarkdownHook> getMarkdownHooks();
     public void setMarkdownParser(MarkdownParser parser);
     public void setTemplateEngine(TemplateEngine templateEngine);
+    public String getTopicsDirectory();
+    public void setTopicsDirectory(String topicsDirectory);
 
 }
